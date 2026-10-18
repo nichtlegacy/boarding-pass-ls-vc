@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Flight GT406: your GTA VI boarding pass to Vice City</title>
+<meta name="description" content="Type your name or gamertag and get a FlyUS boarding pass from Los Santos to Vice City, landing 19 Nov 2026. Free, fan-made GTA VI ticket generator.">
+<link rel="canonical" href="https://boardingpass.nichtlegacy.com/">
+<meta name="author" content="nichtlegacy">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#111016">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="apple-mobile-web-app-title" content="GT406">
+
+<!-- One card for every link: crawlers do not run JavaScript, so ?name= links preview the same. The ?v= hash is
+     stamped by scripts/render.sh, so caches that key on the image URL (Discord, Facebook, WhatsApp) refetch. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Flight GT406">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://boardingpass.nichtlegacy.com/">
+<meta property="og:title" content="Flight GT406: your boarding pass to Vice City">
+<meta property="og:description" content="Type your name, get your own FlyUS ticket from Los Santos to Vice City, landing 19 Nov 2026. Save it as a ticket, Story or Post. Free GTA VI fan project.">
+<meta property="og:image" content="https://boardingpass.nichtlegacy.com/og.jpg?v=38d98205">
+<meta property="og:image:secure_url" content="https://boardingpass.nichtlegacy.com/og.jpg?v=38d98205">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A FlyUS boarding pass for flight GT406, LSX Los Santos to VCI Vice City, with the passenger field reading “Your name here”, beside the GTA VI logo and the words “Your seat to Vice City.”">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Flight GT406: your boarding pass to Vice City">
+<meta name="twitter:description" content="Type your name, get your own FlyUS boarding pass from Los Santos to Vice City. Lands 19 Nov 2026.">
+<meta name="twitter:image" content="https://boardingpass.nichtlegacy.com/og.jpg?v=38d98205">
+<meta name="twitter:image:alt" content="A FlyUS boarding pass for flight GT406, LSX Los Santos to VCI Vice City, with the passenger field reading “Your name here”, beside the GTA VI logo and the words “Your seat to Vice City.”">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<script>
+// Runs before first paint: .js gates every hidden state in CSS, and the splash variant is picked here so
+// the curtain never flashes on a deep link or under reduced motion. data-fmt sizes the stage before
+// checkin.js (a deferred module) picks the format, so a phone deep link does not jump from ticket to story.
+(()=>{const d=document.documentElement,q=new URLSearchParams(location.search),f=q.get('format');d.classList.add('js');
+d.dataset.fmt=['ticket','story','post'].includes(f)?f:matchMedia('(max-width: 760px)').matches?'story':'ticket';
+let m='full';try{if(sessionStorage.getItem('gt406:seen'))m='short';sessionStorage.setItem('gt406:seen','1')}catch(e){}
+if(q.get('name')){m='none';d.classList.add('shared')}if(matchMedia('(prefers-reduced-motion: reduce)').matches)m='none';d.dataset.intro=m})();
+</script>
+<link rel="preload" as="font" href="fonts/onest-var.woff2" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="app.css">
+<link rel="modulepreload" href="js/passenger.js">
+<script type="module" src="app.js"></script>
+<script type="module" src="checkin.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://boardingpass.nichtlegacy.com/#website",
+      "url": "https://boardingpass.nichtlegacy.com/",
+      "name": "Flight GT406",
+      "description": "Fan-made GTA VI boarding pass generator.",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://boardingpass.nichtlegacy.com/#author" },
+      "about": { "@id": "https://boardingpass.nichtlegacy.com/#app" }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://boardingpass.nichtlegacy.com/#webpage",
+      "url": "https://boardingpass.nichtlegacy.com/",
+      "name": "Flight GT406: your GTA VI boarding pass to Vice City",
+      "isPartOf": { "@id": "https://boardingpass.nichtlegacy.com/#website" },
+      "about": { "@id": "https://boardingpass.nichtlegacy.com/#app" },
+      "primaryImageOfPage": { "@id": "https://boardingpass.nichtlegacy.com/#primaryimage" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://boardingpass.nichtlegacy.com/#primaryimage",
+      "url": "https://boardingpass.nichtlegacy.com/og.jpg",
+      "contentUrl": "https://boardingpass.nichtlegacy.com/og.jpg",
+      "width": 1200,
+      "height": 630,
+      "caption": "A FlyUS boarding pass for flight GT406, LSX Los Santos to VCI Vice City, with the passenger field reading “Your name here”, beside the GTA VI logo and the words “Your seat to Vice City.”"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://boardingpass.nichtlegacy.com/#author",
+      "name": "nichtlegacy",
+      "url": "https://github.com/nichtlegacy",
+      "sameAs": ["https://github.com/nichtlegacy"]
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://boardingpass.nichtlegacy.com/#app",
+      "name": "Flight GT406 boarding pass generator",
+      "alternateName": ["GT406 boarding pass", "GTA 6 boarding pass generator"],
+      "url": "https://boardingpass.nichtlegacy.com/",
+      "description": "Fan-made generator for personalised FlyUS boarding passes, flight GT406 from Los Santos to Vice City, landing on the GTA VI release date. Unofficial; not affiliated with Rockstar Games or Take-Two Interactive.",
+      "applicationCategory": "EntertainmentApplication",
+      "operatingSystem": "Any (web browser)",
+      "browserRequirements": "Requires JavaScript",
+      "inLanguage": "en",
+      "image": { "@id": "https://boardingpass.nichtlegacy.com/#primaryimage" },
+      "featureList": [
+        "Your name or gamertag on a FlyUS boarding pass, Los Santos (LSX) to Vice City (VCI)",
+        "Seat, booking reference and barcodes derived from the name, so a link re-creates the pass",
+        "Four liveries: Night, Sunset, Day and Ocean Drive",
+        "Ticket 2000×813, Story 1080×1920 and Post 1600×900",
+        "PNG, JPG and SVG downloads, share links and embeds"
+      ],
+      "about": { "@type": "VideoGame", "name": "Grand Theft Auto VI", "publisher": { "@type": "Organization", "name": "Rockstar Games" } },
+      "codeRepository": "https://github.com/nichtlegacy/boarding-pass-ls-vc",
+      "license": "https://opensource.org/licenses/MIT",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@id": "https://boardingpass.nichtlegacy.com/#author" },
+      "mainEntityOfPage": { "@id": "https://boardingpass.nichtlegacy.com/#webpage" }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#name">Skip to check-in</a>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- Icons after Lucide (ISC). -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></symbol>
+<symbol id="i-plane" viewBox="0 0 24 24"><path d="M2 22h20"/><path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></symbol>
+<symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+<symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 19V5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
+</svg>
+
+<main id="main">
+<section id="top" class="hero" aria-labelledby="hero-h">
+  <div class="hero-stage">
+<picture class="hero-photo">
+      <source media="(max-width: 760px) and (orientation: portrait)" srcset="img/hero-m.jpg">
+      <img src="img/hero-1600.jpg" srcset="img/hero-1600.jpg 1600w, img/hero-2560.jpg 2560w" sizes="100vw" width="1600" height="900" alt="" fetchpriority="high">
+    </picture>
+    <div class="hero-shade"></div>
+    <div class="intro" aria-hidden="true">
+      <!-- The VI of img/gta-vi.png, measured from its pixels: centre lines at the logo's 14.4 px stroke, same
+           1200x910 box, so the drawn mark lands on the logo exactly. Both paths start mid-bar and overrun
+           their start by 10 px, so neither the first frame nor the close shows a cap on a corner. -->
+      <svg class="intro-mark" viewBox="0 0 1200 910" focusable="false"><path pathLength="1" style="--n:0" d="M160 7.2H310.9L428.8 262.9L546.6 7.2H845.9L428.8 871.3L11.7 7.2H170"/><path pathLength="1" style="--n:1" d="M1045 7.2H1192.8V902.7H897.6V7.2H1055"/></svg>
+    </div>
+    <p id="days" class="chip chip-r after-intro needs-js" style="--i:3"><b class="days-n">31</b><span class="days-l"><span>DAYS</span><span>TO GO</span></span></p>
+
+    <div class="hero-title">
+      <p class="kicker after-intro" style="--i:0">FlyUS<span aria-hidden="true">&nbsp;&nbsp;·&nbsp;&nbsp;</span><span class="sr-only"> · </span><span class="kicker-st">Now boarding</span></p>
+      <img class="gta-logo" src="img/gta-vi.png" width="1200" height="910" alt="Grand Theft Auto VI" decoding="async">
+      <h1 id="hero-h" class="hero-line after-intro" style="--i:1"><span class="sr-only">Flight GT406: </span>Your seat to Vice City</h1>
+      <p class="hero-arrive latch" data-at=".34"><span class="arrive-main">Lands 19 Nov 2026 · 00:00 EST</span><span class="arrive-local">&nbsp;</span></p>
+      <div id="cd" class="cd latch needs-js" data-at=".52">
+        <div class="cd-cells" aria-hidden="true">
+          <div><span class="num" data-k="days"></span><span class="micro">Days</span></div>
+          <div><span class="num" data-k="hours"></span><span class="micro">Hours</span></div>
+          <div><span class="num" data-k="minutes"></span><span class="micro">Min</span></div>
+          <div><span class="num" data-k="seconds"></span><span class="micro">Sec</span></div>
+        </div>
+        <p class="cd-cap micro" hidden>until wheels down</p>
+        <p class="sr-only" id="cd-sr"></p>
+      </div>
+    </div>
+
+    <div class="hero-bottom after-intro" style="--i:4">
+      <a href="#checkin">Check in <svg class="ic" aria-hidden="true"><use href="#i-arrow-down"/></svg></a>
+      <a href="#flight">Flight info <svg class="ic" aria-hidden="true"><use href="#i-arrow-down"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section id="checkin" class="section checkin" aria-labelledby="ci-h">
+  <div class="ci-head">
+    <div class="ci-intro">
+      <h2 id="ci-h" class="ink rv-head">Check in</h2>
+      <p class="nojs-note">The generator needs JavaScript. Everything else on this page works without it.</p>
+    </div>
+    <form class="ci-form needs-js" id="ci-form" autocomplete="off">
+      <label class="field" for="name">
+        <span class="micro">Passenger name</span>
+        <input id="name" name="name" type="text" maxlength="64" placeholder="Name or gamertag" spellcheck="false" autocapitalize="words" enterkeyhint="done">
+        <span class="count" id="count" hidden></span>
+      </label>
+      <div class="try" role="group" aria-labelledby="try-l"><span class="micro" id="try-l">Or board as</span><div class="cast"><button type="button" class="cast-btn" data-try="Jason Duval"><b>Jason Duval</b><small>GTA VI</small></button><button type="button" class="cast-btn" data-try="Lucia Caminos"><b>Lucia Caminos</b><small>GTA VI</small></button><button type="button" class="cast-btn" data-try="Cal Hampton"><b>Cal Hampton</b><small>GTA VI</small></button><button type="button" class="cast-btn" data-try="Boobie Ike"><b>Boobie Ike</b><small>GTA VI</small></button><button type="button" class="cast-btn" data-try="Brian Heder"><b>Brian Heder</b><small>GTA VI</small></button><button type="button" class="cast-btn" data-try="Raul Bautista"><b>Raul Bautista</b><small>GTA VI</small></button><button type="button" class="cast-btn" data-try="Tommy Vercetti"><b>Tommy Vercetti</b><small>Vice City</small></button><button type="button" class="cast-btn" data-try="Carl Johnson"><b>Carl Johnson</b><small>San Andreas</small></button><button type="button" class="cast-btn" data-try="Niko Bellic"><b>Niko Bellic</b><small>GTA IV</small></button><button type="button" class="cast-btn" data-try="Michael De Santa"><b>Michael De Santa</b><small>GTA V</small></button><button type="button" class="cast-btn" data-try="Trevor Philips"><b>Trevor Philips</b><small>GTA V</small></button><button type="button" class="cast-btn" data-try="Franklin Clinton"><b>Franklin Clinton</b><small>GTA V</small></button></div></div>
+      <p id="name-msg" class="msg" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <p id="banner" class="banner" hidden><svg class="ic" aria-hidden="true"><use href="#i-ticket"/></svg>Shared boarding pass. Type your name to get your own.</p>
+
+  <div id="stage" class="stage needs-js" data-state="empty">
+    <div class="slot" aria-hidden="true"></div>
+    <div class="throat">
+      <p class="stage-empty micro" aria-hidden="true">Your boarding pass prints here</p>
+      <div class="paper"><div class="tilt"><div class="buf"></div><div class="buf"></div><span class="sheen" aria-hidden="true"></span><span class="glare" aria-hidden="true"></span><span class="holo" aria-hidden="true"></span></div></div>
+    </div>
+    <p class="sr-only" id="stage-sr" aria-live="polite"></p>
+    <button type="button" class="view-btn" id="view"><svg class="ic" aria-hidden="true"><use href="#i-expand"/></svg>View full screen</button>
+  </div>
+
+  <div class="controls needs-js">
+    <fieldset class="group">
+      <legend class="micro">Livery</legend>
+      <div class="chips scroller">
+        <label class="lv" title="Midnight over downtown."><input type="radio" name="theme" value="night" checked><span class="lv-sw"><img src="img/swatch-night.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Night</span></label>
+        <label class="lv" title="The original lavender, at dusk."><input type="radio" name="theme" value="sunset"><span class="lv-sw"><img src="img/swatch-sunset.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Sunset</span></label>
+        <label class="lv" title="Seaplane over the Keys."><input type="radio" name="theme" value="keys"><span class="lv-sw"><img src="img/swatch-keys.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Leonida Keys</span></label>
+        <label class="lv" title="Teal, coral, 1986."><input type="radio" name="theme" value="ocean"><span class="lv-sw"><img src="img/swatch-ocean.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Ocean Drive</span></label>
+      </div>
+    </fieldset>
+    <fieldset class="group">
+      <legend class="micro">Format</legend>
+      <div class="seg">
+        <label><input type="radio" name="format" value="ticket" checked>Ticket<small>2000×813</small></label>
+        <label><input type="radio" name="format" value="story">Story<small>1080×1920</small></label>
+        <label><input type="radio" name="format" value="post">Post<small>1600×900</small></label>
+      </div>
+    </fieldset>
+    <fieldset class="group export">
+      <legend class="micro">Export</legend>
+      <div class="export-row">
+        <div class="seg seg-sm" role="radiogroup" aria-label="File type">
+          <label><input type="radio" name="type" value="png" checked>PNG</label>
+          <label><input type="radio" name="type" value="jpg">JPG</label>
+          <label><input type="radio" name="type" value="svg">SVG</label>
+        </div>
+        <div class="seg seg-sm" role="radiogroup" aria-label="Scale">
+          <label><input type="radio" name="scale" value="1">1×</label>
+          <label><input type="radio" name="scale" value="2" checked>2×</label>
+        </div>
+      </div>
+    </fieldset>
+    <div class="actions">
+      <button type="button" class="btn primary" id="dl"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg><span class="dl-label">Download PNG · 2×</span></button>
+      <button type="button" class="btn" id="copy" hidden><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>Copy image</button>
+      <button type="button" class="btn" id="share" hidden><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>Share</button>
+      <button type="button" class="btn" id="link"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg>Copy link</button>
+    </div>
+  </div>
+
+  <details id="embed" class="embed needs-js">
+    <summary><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg>Embed<span>iframe, Markdown or HTML for your site or README</span></summary>
+    <div class="embed-grid">
+      <div class="snip"><label class="micro" for="em-iframe">iframe</label><textarea id="em-iframe" readonly rows="4" spellcheck="false"></textarea><button type="button" class="btn sm" data-copy="em-iframe">Copy</button></div>
+      <div class="snip"><label class="micro" for="em-md">Markdown</label><textarea id="em-md" readonly rows="4" spellcheck="false"></textarea><button type="button" class="btn sm" data-copy="em-md">Copy</button></div>
+      <div class="snip"><label class="micro" for="em-html">HTML, light and dark</label><textarea id="em-html" readonly rows="4" spellcheck="false"></textarea><button type="button" class="btn sm" data-copy="em-html">Copy</button></div>
+    </div>
+    <p class="embed-foot"><button type="button" class="btn sm" data-copy="alt">Copy alt text</button><span>Download the image and upload it next to your page; this site is static and does not host images.</span></p>
+  </details>
+</section>
+
+<section id="liveries" class="section liveries needs-js" aria-labelledby="lv-h">
+  <div class="head">
+    <h2 id="lv-h" class="ink rv-head">Four liveries</h2>
+  </div>
+  <div class="lv-grid">
+      <button type="button" class="lv-card rv-item" data-livery="night" aria-label="Print your pass in the Night livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Night</b><span>Midnight over downtown.</span></span></button>
+      <button type="button" class="lv-card rv-item" data-livery="sunset" aria-label="Print your pass in the Sunset livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Sunset</b><span>The original lavender, at dusk.</span></span></button>
+      <button type="button" class="lv-card rv-item" data-livery="keys" aria-label="Print your pass in the Leonida Keys livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Leonida Keys</b><span>Seaplane over the Keys.</span></span></button>
+      <button type="button" class="lv-card rv-item" data-livery="ocean" aria-label="Print your pass in the Ocean Drive livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Ocean Drive</b><span>Teal, coral, 1986.</span></span></button>
+  </div>
+</section>
+
+<section id="flight" class="section flight" aria-labelledby="fl-h">
+  <div class="head">
+    <h2 id="fl-h" class="ink rv-head">Flight GT406</h2>
+    <p class="lead rv-head">Los Santos International, Terminal 1. Only one of these is actually leaving.</p>
+  </div>
+  <div class="board rv-block" id="board">
+    <div class="board-top"><h3 class="board-h">FlyUS · Departures</h3><span class="micro" id="board-clock">Los Santos International</span></div>
+    <table>
+      <caption class="sr-only">FlyUS departures, Los Santos International</caption>
+      <thead><tr><th scope="col">Time</th><th scope="col">Flight</th><th scope="col">Destination</th><th scope="col">Gate</th><th scope="col">Status</th></tr></thead>
+      <tbody>
+        <tr class="gt406"><td>16:00</td><td>GT406</td><td>VICE CITY</td><td>6</td><td class="st ok" id="board-st">ON TIME</td></tr>
+        <tr><td>16:20</td><td>GT221</td><td>LIBERTY CITY</td><td>4</td><td class="st warn">DELAYED</td></tr>
+        <tr><td>16:45</td><td>GT404</td><td>LAS VENTURAS</td><td>-</td><td class="st bad">NOT FOUND</td></tr>
+        <tr><td>17:05</td><td>GT013</td><td>NORTH YANKTON</td><td>9</td><td class="st bad">CANCELLED</td></tr>
+        <tr><td>17:30</td><td>GT777</td><td>CAYO PERICO</td><td>2</td><td class="st warn">CHARTER</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <dl class="facts rv-block">
+    <div class="rv-item"><dt class="micro">Departs</dt><dd>16:00 PST<small>LSX · Los Santos</small></dd></div>
+    <div class="rv-item"><dt class="micro">Arrives</dt><dd>00:00 EST<small>VCI · Vice City</small></dd></div>
+    <div class="rv-item"><dt class="micro">Block time</dt><dd>5h 00m<small>Nonstop</small></dd></div>
+    <div class="rv-item"><dt class="micro">Distance</dt><dd>2,338 mi<small>3,763 km</small></dd></div>
+    <div class="rv-item"><dt class="micro">Time change</dt><dd>+3 hours<small>PST → EST</small></dd></div>
+    <div class="rv-item"><dt class="micro">Wi-Fi</dt><dd>Allegedly<small>Gate 6 · Terminal 1</small></dd></div>
+  </dl>
+  <p class="local-time needs-js" id="local-time"></p>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-hero">
+    <img class="foot-logo" src="img/gta-vi.png" width="1200" height="910" alt="Grand Theft Auto VI" loading="lazy" decoding="async">
+    <p class="foot-line">Your seat to Vice City</p>
+    <p class="foot-sub micro">FlyUS · Flight GT406 · LSX → VCI · 19 Nov 2026</p>
+    <a class="btn primary foot-cta" href="#checkin"><svg class="ic" aria-hidden="true"><use href="#i-ticket"/></svg>Print your pass</a>
+  </div>
+  <div class="foot-bar">
+    <p class="foot-links">Built by <a href="https://github.com/nichtlegacy" rel="noopener">nichtlegacy</a><span aria-hidden="true">·</span><a href="https://github.com/nichtlegacy/boarding-pass-ls-vc" rel="noopener">Source</a><span aria-hidden="true">·</span><a href="https://github.com/nichtlegacy/boarding-pass-ls-vc/blob/main/LICENSE" rel="noopener">MIT</a></p>
+    <a class="to-top" href="#top"><span>Back to top</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-up"/></svg></a>
+  </div>
+  <p class="colophon">Unofficial fan project, not affiliated with Rockstar Games or Take-Two Interactive. Grand Theft Auto, GTA VI, Vice City, Los Santos and FlyUS are trademarks of their respective owners; the screenshots and logo belong to Rockstar Games and are used as fan art (via gtavicentre.com). Ticket design after the GT406 passes shared on X. Fonts: Onest, Carlito, Archivo, Arimo (OFL). QR: Nayuki (MIT). Icons after Lucide (ISC). No cookies, no analytics; your name stays in your browser.</p>
+</footer>
+
+<div class="dock">
+  <a class="dock-brand" href="#top" aria-label="Back to top"><svg class="ic" aria-hidden="true"><use href="#i-plane"/></svg><span>GT406</span></a>
+  <nav aria-label="Sections">
+    <span class="dock-ind" aria-hidden="true"></span>
+    <a href="#checkin">Check in</a>
+    <a href="#liveries" class="needs-js">Liveries</a>
+    <a href="#flight">Flight</a>
+  </nav>
+  <div role="group" aria-label="Ticket actions" class="dock-actions needs-js">
+    <button type="button" id="dock-link" class="dock-ic" data-tip="Copy link" aria-label="Copy link"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg></button>
+    <button type="button" id="dock-dl" class="dock-cta" aria-label="Download your pass"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg><span>Get pass</span></button>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="viewer" aria-labelledby="viewer-h">
+  <h2 id="viewer-h" class="sr-only">Your boarding pass</h2>
+  <div class="viewer-art"></div>
+  <p class="viewer-hint micro">Hold it like a real boarding pass.</p>
+  <button type="button" class="btn primary viewer-save"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>Save or share</button>
+  <button type="button" class="viewer-close" aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+</dialog>
+</body>
+</html>

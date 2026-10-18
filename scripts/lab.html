@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="../site/"><!-- photo hrefs in the ticket SVG are relative to site/ -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>GT406 lab</title>
+<!--
+  Dev harness (never deployed). Serve the repo root:
+    python3 -m http.server 8001 --bind 0.0.0.0   →  http://<lan-ip>:8001/scripts/lab.html
+  Params: name (repeatable: ?name=A&name=B), theme (id | all), format (id | all), artOnly=1, prefix.
+  One name × one theme × one format renders that SVG at native size with zero margin (QA screenshots it);
+  anything else renders a labelled grid. artOnly=1 draws only art.js output inside the die-cut shapes,
+  so the art can be judged before ENGINE's ticket.js exists (lab falls back to it automatically).
+-->
+<style>
+  @font-face{font-family:"GT406 Sans";src:url("../site/fonts/carlito-400.woff2") format("woff2");font-weight:400;font-style:normal}
+  @font-face{font-family:"GT406 Sans";src:url("../site/fonts/carlito-700.woff2") format("woff2");font-weight:700;font-style:normal}
+  @font-face{font-family:"GT406 Sans";src:url("../site/fonts/carlito-700i.woff2") format("woff2");font-weight:700;font-style:italic}
+  @font-face{font-family:"Archivo Expanded";src:url("../site/fonts/archivo-expanded-900.woff2") format("woff2");font-weight:900;font-style:normal}
+  @font-face{font-family:"Arimo";src:url("../site/fonts/arimo-700i.woff2") format("woff2");font-weight:700;font-style:italic}
+  html,body{margin:0;background:#111016;color:#bdb0c8;font:13px/1.4 system-ui,sans-serif}
+  body.single svg{display:block}
+  .grid{display:flex;flex-wrap:wrap;gap:28px 24px;padding:24px}
+  figure{margin:0}
+  figcaption{margin:0 0 8px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#efb0d0}
+  figure.ticket svg{width:960px;height:auto;display:block}
+  figure.story svg{width:300px;height:auto;display:block}
+  figure.post svg{width:768px;height:auto;display:block}
+  .note{padding:12px 24px;color:#ffd0ae}
+</style>
+</head>
+<body>
+<script type="module">
+import { ART_THEMES, ticketArt, cardArt, sceneArt } from '../site/js/art.js';
+
+const q = new URLSearchParams(location.search);
+const ALL_FORMATS = ['ticket', 'story', 'post'];
+const themeIds = Object.keys(ART_THEMES);
+const pick = (v, all) => (!v || v === 'all') ? all : all.includes(v) ? [v] : [all[0]];
+const names = q.getAll('name').length ? q.getAll('name') : ['Fixate'];
+const themes = pick(q.get('theme'), themeIds);
+const formats = pick(q.get('format'), ALL_FORMATS);
+const prefix = /^[a-z][a-z0-9-]*-$/.test(q.get('prefix') || '') ? q.get('prefix') : 'lab-';
+let artOnly = q.get('artOnly') === '1';
+
+// ENGINE modules are optional here: the art must be reviewable before they exist.
+const load = async path => { try { return await import(path); } catch (e) { return null; } };
+const [P, T] = await Promise.all([load('../site/js/passenger.js'), artOnly ? null : load('../site/js/ticket.js')]);
+const notes = [];
+if (!artOnly && !T) { artOnly = true; notes.push('ticket.js missing or failing to import: showing artOnly renders.'); }
+if (!P) notes.push('passenger.js missing: using fixed art seeds.');
+
+// Fallback seeds when passenger.js is absent (Luther West's values from the spec's golden table).
+const fallback = name => ({ sunT: .204, sunJ: .744, palms: [[.5, .5, .5, .5], [.3, .6, .4, .7], [.7, .4, .6, .3], [.5, .5, .5, .5]], sign: 'MIRAGE', win: 2840391163 });
+const passenger = name => P ? P.derive(name) : { art: fallback(name), cabin: 'MAIN', display: name };
+
+const SHAPE = 'M28,0H1391A24,24 0 0 0 1439,0H1972A28,28 0 0 1 2000,28V785A28,28 0 0 1 1972,813H1439A24,24 0 0 0 1391,813H28A28,28 0 0 1 0,785V28A28,28 0 0 1 28,0Z';
+const CARD = 'M40,0H872A40,40 0 0 1 912,40V1040A36,36 0 0 0 912,1112V1400A40,40 0 0 1 872,1440H40A40,40 0 0 1 0,1400V1112A36,36 0 0 0 0,1040V40A40,40 0 0 1 40,0Z';
+
+// Art-only composition: mirrors ENGINE's group order (D.1 / D.6) without boxes or ink.
+function artSVG(p, format, theme, P_) {
+  const args = { theme, seeds: p.art, foil: p.cabin === 'FIRST', P: P_ };
+  if (format === 'post') {
+    const s = sceneArt({ ...args, width: 1600, height: 900 });
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900"><defs>${s.defs}</defs>${s.body}</svg>`;
+  }
+  if (format === 'story') {
+    const s = sceneArt({ ...args, width: 1080, height: 1920 }), c = cardArt(args);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920"><defs>${s.defs}${c.defs}<clipPath id="${P_}x-card"><path d="${CARD}"/></clipPath></defs>${s.body}<g transform="translate(84 236)"><g clip-path="url(#${P_}x-card)">${c.field}${c.band}</g></g></svg>`;
+  }
+  const a = ticketArt(args);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 813" width="2000" height="813"><defs>${a.defs}<clipPath id="${P_}x-shape"><path d="${SHAPE}"/></clipPath></defs><g clip-path="url(#${P_}x-shape)">${a.back}${a.tabs}</g></svg>`;
+}
+
+const render = (name, format, theme, P_) => {
+  const p = passenger(name);
+  return artOnly ? artSVG(p, format, theme, P_) : T.buildTicketSVG(p, { format, theme, prefix: P_ });
+};
+
+if (T?.fontsReady) await T.fontsReady();
+else await Promise.all(['400 40px "GT406 Sans"', '700 40px "GT406 Sans"', 'italic 700 40px "GT406 Sans"', '900 40px "Archivo Expanded"', 'italic 700 40px Arimo'].map(f => document.fonts.load(f).catch(() => {})));
+
+const combos = [];
+for (const format of formats) for (const theme of themes) for (const name of names) combos.push({ name, format, theme });
+
+if (combos.length === 1) {
+  document.body.className = 'single';
+  const { name, format, theme } = combos[0];
+  document.body.insertAdjacentHTML('beforeend', render(name, format, theme, prefix));
+  if (notes.length) console.warn(notes.join(' '));
+} else {
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  // Each cell gets its own prefix so ids never collide (rule R2 doubles as a test here).
+  grid.innerHTML = combos.map(({ name, format, theme }, i) =>
+    `<figure class="${format}"><figcaption>${format} · ${theme} · ${name.replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';') || '(ghost)'}</figcaption>${render(name, format, theme, `${prefix}${i}-`)}</figure>`).join('');
+  document.body.append(...notes.map(n => Object.assign(document.createElement('p'), { className: 'note', textContent: n })), grid);
+}
+document.documentElement.dataset.ready = '1';   // screenshot scripts wait for this
+</script>
+</body>
+</html>
