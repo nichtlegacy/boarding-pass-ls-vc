@@ -59,7 +59,7 @@ export const ART_THEMES = {
     scene: { story: 'scene-story-goodtime.jpg', post: 'scene-post-goodtime.jpg' },
     stickers: {
       ticket: [['sun', 1196, 52, 200, true], ['gator', 740, 652, 380]],
-      card: [['gator', 625, 1046, 245]],
+      card: [['gator', 615, 1066, 260]],   // flat cut edge resting on the barcode (top y 1250)
       story: [['sun', -46, -40, 190], ['flamingo', -20, 1560, 260], ['manatee', 790, 1572, 300]],
       post: [['manatee', -24, 690, 260], ['flamingo', 1474, 548, 196]],
     },
