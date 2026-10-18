@@ -3,7 +3,7 @@
 import { buildTicketSVG, FORMATS } from './ticket.js';
 import { photosFor } from './art.js';
 import { themeOf, DEFAULT_THEME } from './themes.js';
-import { slug, shareUrl, countdown } from './passenger.js';
+import { slug, shareUrl, countdown, localUnlock } from './passenger.js';
 
 const BROWSER = typeof window !== 'undefined' && typeof document !== 'undefined';
 
@@ -100,7 +100,7 @@ export async function exportRaster(p, { format, theme, type = 'png', scale = 1, 
 // ---------- 1× PNG cache (Copy image and Share need a blob inside the user gesture) ----------
 
 const cache = new Map();   // key -> { promise, blob }
-const keyOf = (p, { format, theme } = {}) => [(FORMATS[format] || FORMATS.ticket).id, themeOf(theme).id, p.key, p.display, countdown().label].join('|');
+const keyOf = (p, { format, theme } = {}) => [(FORMATS[format] || FORMATS.ticket).id, themeOf(theme).id, p.key, p.display, countdown(Date.now(), localUnlock().at).label].join('|');
 
 export function pngPromise(p, opts = {}) {
   const k = keyOf(p, opts);

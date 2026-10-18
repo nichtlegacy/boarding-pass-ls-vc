@@ -135,13 +135,66 @@ export function qrText(name, theme) {
 // ---------- the one clock (hero digits, days chip, Story days line all read this) ----------
 
 const MIN = 60e3, HOUR = 60 * MIN, DAY = 24 * HOUR;
-export function countdown(now = Date.now()) {
-  const ms = Math.max(0, FLIGHT.arr - now);
+// `at` is the visitor's unlock (localUnlock().at on the page); the flight states keep the LSX schedule,
+// but the game being out wins: Europe and Asia land before GT406 has even left.
+export function countdown(now = Date.now(), at = FLIGHT.arr) {
+  const ms = Math.max(0, at - now);
   const days = Math.floor(ms / DAY), hours = Math.floor(ms / HOUR) % 24, minutes = Math.floor(ms / MIN) % 60, seconds = Math.floor(ms / 1000) % 60;
-  const state = now >= FLIGHT.arr ? 'landed' : now >= FLIGHT.dep ? 'inflight'
+  const state = now >= at ? 'landed' : now >= FLIGHT.dep ? 'inflight'
     : now >= FLIGHT.dep - 15 * MIN ? 'finalcall' : now >= FLIGHT.dep - 40 * MIN ? 'boarding' : 'ontime';
   const n = (v, one, many) => v + ' ' + (v === 1 ? one : many) + ' TO GO';
   const label = ms <= 0 ? 'WHEELS DOWN' : days ? n(days, 'DAY', 'DAYS') : hours ? n(hours, 'HOUR', 'HOURS')
     : minutes ? n(minutes, 'MIN', 'MIN') : n(seconds, 'SEC', 'SEC');
   return { state, ms, days, hours, minutes, seconds, label };
 }
+
+// ---------- regional unlock ----------
+// PlayStation Store unlock windows for 19 Nov 2026 (15 waves over 63 storefronts), as collected by
+// gtavicentre.com; Rockstar has only confirmed the date. Mostly midnight local, but each country unlocks at
+// once (the US at 00:00 Eastern, so 21:00 on the West Coast). Zones not listed get local midnight, flagged
+// as an estimate.
+const WAVES = [
+  ['2026-11-18T11:00Z', 'New Zealand|Pacific/Auckland,Pacific/Chatham'],
+  ['2026-11-18T13:00Z', 'Australia|Australia/Sydney,Australia/Melbourne,Australia/Hobart,Australia/Brisbane,Australia/Adelaide,Australia/Darwin,Australia/Perth,Australia/Broken_Hill,Australia/Lord_Howe,Australia/Lindeman'],
+  ['2026-11-18T15:00Z', 'Japan|Asia/Tokyo;South Korea|Asia/Seoul'],
+  ['2026-11-18T16:00Z', 'Hong Kong|Asia/Hong_Kong;Malaysia|Asia/Kuala_Lumpur,Asia/Kuching;Singapore|Asia/Singapore;Taiwan|Asia/Taipei'],
+  ['2026-11-18T17:00Z', 'Indonesia|Asia/Jakarta,Asia/Pontianak,Asia/Makassar,Asia/Jayapura;Thailand|Asia/Bangkok'],
+  ['2026-11-18T18:30Z', 'India|Asia/Kolkata,Asia/Calcutta'],
+  ['2026-11-18T20:00Z', 'the United Arab Emirates|Asia/Dubai'],
+  ['2026-11-18T21:00Z', 'Saudi Arabia|Asia/Riyadh;Turkey|Europe/Istanbul,Asia/Istanbul'],
+  ['2026-11-18T22:00Z', 'Bulgaria|Europe/Sofia;Cyprus|Asia/Nicosia,Europe/Nicosia,Asia/Famagusta;Finland|Europe/Helsinki;Greece|Europe/Athens;Israel|Asia/Jerusalem;Romania|Europe/Bucharest;South Africa|Africa/Johannesburg;Ukraine|Europe/Kyiv,Europe/Kiev,Europe/Uzhgorod,Europe/Zaporozhye'],
+  ['2026-11-18T23:00Z', 'Austria|Europe/Vienna;Belgium|Europe/Brussels;Croatia|Europe/Zagreb;Czechia|Europe/Prague;Denmark|Europe/Copenhagen;France|Europe/Paris;Germany|Europe/Berlin,Europe/Busingen;Hungary|Europe/Budapest;Italy|Europe/Rome;Luxembourg|Europe/Luxembourg;Malta|Europe/Malta;the Netherlands|Europe/Amsterdam;Norway|Europe/Oslo;Poland|Europe/Warsaw;Slovakia|Europe/Bratislava;Slovenia|Europe/Ljubljana;Spain|Europe/Madrid,Atlantic/Canary,Africa/Ceuta;Sweden|Europe/Stockholm;Switzerland|Europe/Zurich'],
+  ['2026-11-19T00:00Z', 'Iceland|Atlantic/Reykjavik;Ireland|Europe/Dublin;Portugal|Europe/Lisbon,Atlantic/Azores,Atlantic/Madeira;the UK|Europe/London,GB,GB-Eire'],
+  ['2026-11-19T03:00Z', 'Argentina|America/Argentina/Buenos_Aires,America/Buenos_Aires;Brazil|America/Sao_Paulo,America/Manaus,America/Belem,America/Fortaleza,America/Recife,America/Maceio,America/Bahia,America/Santarem,America/Porto_Velho,America/Boa_Vista,America/Campo_Grande,America/Cuiaba,America/Rio_Branco,America/Eirunepe,America/Noronha;Chile|America/Santiago,America/Punta_Arenas,Pacific/Easter;Paraguay|America/Asuncion;Uruguay|America/Montevideo'],
+  ['2026-11-19T04:00Z', 'Bolivia|America/La_Paz'],
+  ['2026-11-19T05:00Z', 'Canada|America/Toronto,America/Vancouver,America/Edmonton,America/Winnipeg,America/Halifax,America/St_Johns,America/Regina,America/Whitehorse,America/Dawson,America/Dawson_Creek,America/Fort_Nelson,America/Creston,America/Moncton,America/Glace_Bay,America/Goose_Bay,America/Iqaluit,America/Rankin_Inlet,America/Resolute,America/Cambridge_Bay,America/Inuvik,America/Yellowknife,America/Rainy_River,America/Thunder_Bay,America/Montreal,America/Atikokan,America/Blanc-Sablon,America/Swift_Current;Colombia|America/Bogota;Ecuador|America/Guayaquil,Pacific/Galapagos;Panama|America/Panama;Peru|America/Lima;the US|America/New_York,America/Chicago,America/Denver,America/Los_Angeles,America/Phoenix,America/Anchorage,America/Adak,Pacific/Honolulu,America/Detroit,America/Boise,America/Juneau,America/Sitka,America/Metlakatla,America/Yakutat,America/Nome,US/Eastern,US/Central,US/Mountain,US/Pacific,US/Alaska,US/Hawaii'],
+  ['2026-11-19T06:00Z', 'Costa Rica|America/Costa_Rica;El Salvador|America/El_Salvador;Guatemala|America/Guatemala;Honduras|America/Tegucigalpa;Mexico|America/Mexico_City,America/Cancun,America/Merida,America/Monterrey,America/Matamoros,America/Chihuahua,America/Ciudad_Juarez,America/Ojinaga,America/Hermosillo,America/Mazatlan,America/Bahia_Banderas,America/Tijuana;Nicaragua|America/Managua'],
+];
+const ZONES = new Map();
+for (const [at, list] of WAVES) for (const c of list.split(';')) {
+  const [country, zones] = c.split('|');
+  for (const z of zones.split(',')) ZONES.set(z, { at: Date.parse(at), country });
+}
+
+// 00:00 on 19 Nov 2026 in `zone`: guess UTC midnight, then correct by the zone's wall-clock offset (twice
+// covers a DST edge; there is none that night anywhere, but the loop costs nothing).
+function localMidnight(zone) {
+  const want = Date.UTC(2026, 10, 19);
+  const fmt = new Intl.DateTimeFormat('en-US', { timeZone: zone, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hourCycle: 'h23' });
+  let t = want;
+  for (let i = 0; i < 2; i++) {
+    const p = Object.fromEntries(fmt.formatToParts(t).map(x => [x.type, +x.value]));
+    t += want - Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute);
+  }
+  return t;
+}
+
+export function unlockFor(zone) {
+  const hit = ZONES.get(zone) ?? (/^America\/(Indiana|Kentucky|North_Dakota)\//.test(zone) ? ZONES.get('America/New_York')
+    : zone.startsWith('America/Argentina/') ? ZONES.get('America/Buenos_Aires') : null);
+  if (hit) return { zone, ...hit, estimated: false };
+  try { return { zone, at: localMidnight(zone), country: null, estimated: true }; }
+  catch { return { zone, at: FLIGHT.arr, country: null, estimated: true }; }   // unknown zone name
+}
+let mine;
+export const localUnlock = () => mine ??= unlockFor(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');

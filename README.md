@@ -12,7 +12,7 @@ Type a name or gamertag and the ticket prints. No account, no backend, no tracki
 [![Deploy](https://github.com/nichtlegacy/boarding-pass-ls-vc/actions/workflows/pages.yml/badge.svg)](https://github.com/nichtlegacy/boarding-pass-ls-vc/actions/workflows/pages.yml)
 [![JavaScript: vanilla](https://img.shields.io/badge/JavaScript-vanilla%20ES%20modules-F7DF1E?logo=javascript&logoColor=black)](site/js/)
 [![Build: none](https://img.shields.io/badge/Build-none-222222)](site/)
-[![Self-test: 2168 checks](https://img.shields.io/badge/Self--test-2168%20checks-16A34A)](#tests)
+[![Self-test: 2177 checks](https://img.shields.io/badge/Self--test-2177%20checks-16A34A)](#tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [Website](https://boardingpass.nichtlegacy.com) • [Overview](#overview) • [Features](#features) • [Screenshots](#screenshots) • [Quick start](#quick-start) • [How it works](#how-it-works) • [Privacy](#privacy) • [Credits](#credits-and-third-party-assets)
@@ -45,7 +45,7 @@ The project stays deliberately:
 - **Share links and a real QR code**: `?name=&theme=&format=` reopens the exact pass, and the QR code on the ticket links to it. Two Code128 barcodes carry the route and booking data.
 - **Embeds**: copy-ready iframe, Markdown and HTML (`<picture>` with light and dark) snippets; the iframe serves [`embed.html`](site/embed.html).
 - **Full-screen view**: on a portrait phone the landscape ticket turns on its side, like holding the real thing.
-- **Countdown and departures board**: the landing page counts down to wheels-down in large gradient digits, and a split-flap board moves GT406 from on time to boarding, final call, departed and arrived.
+- **Countdown and departures board**: the landing page counts down to the GTA VI unlock in the visitor's region (the PlayStation Store's 15 regional windows, local midnight as an estimate elsewhere) in large gradient digits, and a split-flap board moves GT406 from on time to boarding, final call, departed and arrived.
 - **Intro and motion**: the GTA VI mark draws itself on first visit; any input fast-forwards it. Under `prefers-reduced-motion` the intro, flaps, tilt and scroll effects are skipped and the page is static.
 
 ## Screenshots
@@ -75,7 +75,7 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory site   # http://localho
 node scripts/selftest.mjs                                        # needs Node, no npm install
 ```
 
-Expected: the landing page with the GTA VI title over the Vice City sign and the countdown; type a name under *Check in* and the pass prints. The self-test ends with `selftest ok: 2168 checks`.
+Expected: the landing page with the GTA VI title over the Vice City sign and the countdown; type a name under *Check in* and the pass prints. The self-test ends with `selftest ok: 2177 checks`.
 
 ### Share links
 
@@ -128,11 +128,11 @@ Deployed to GitHub Pages by [`pages.yml`](.github/workflows/pages.yml) on every 
 |---|---|---|
 | Golden tickets (seat, zone, PNR, sequence, initials, art seed) for fixed names | frozen v1 values | `node scripts/selftest.mjs` |
 | 20,000 synthetic names | First ≈3 %, Extra Legroom ≈12 %, Main ≈85 %, all 172 seats reachable, no row 13 | same |
-| Name cleaning, slugs, share URLs, QR text, file names, countdown states | pass | same |
+| Name cleaning, slugs, share URLs, QR text, file names, countdown states, regional unlock times | pass | same |
 | Code128 decode, QR contrast ≥ 7:1 per livery | pass | same |
 | SVG output rules for every format × livery × awkward name, name fitting | pass | same |
 
-Total: `selftest ok: 2168 checks`, plain Node with `node:assert`, no dependencies.
+Total: `selftest ok: 2177 checks`, plain Node with `node:assert`, no dependencies.
 
 ## Project structure
 

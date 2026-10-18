@@ -1,7 +1,7 @@
 // Flight GT406 — page motion: splash, hero scrub, countdown and days chip, dock, progress, reveals, toast.
 // The check-in flow lives in checkin.js. Every hidden state in app.css is gated by the .js class that the
 // inline head script sets, so this file only ever reveals; if it fails, the page stays readable.
-import { countdown, FLIGHT } from './js/passenger.js';
+import { countdown, localUnlock, FLIGHT } from './js/passenger.js';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const root = document.documentElement;
@@ -153,7 +153,7 @@ function spinUp() {
   cells.forEach((el, i) => {
     for (let k = 0; k < 6; k++) setTimeout(() => setDigits(el, two(Math.floor(Math.random() * 100))), i * 40 + k * 60);
     setTimeout(() => {
-      setDigits(el, values(countdown())[i]);
+      setDigits(el, values(now())[i]);
       if (i === cells.length - 1) spinning = false;
     }, i * 40 + 6 * 60);
   });
@@ -161,10 +161,20 @@ function spinUp() {
 
 const zoneFmt = { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' };
 const localTime = t => new Intl.DateTimeFormat('en-GB', zoneFmt).format(t);
+// The countdown runs to GTA VI's unlock where the visitor is, not to GT406's landing in Vice City.
+const UNLOCK = localUnlock(), now = () => countdown(Date.now(), UNLOCK.at);
 {
-  // "That's Thu 19 Nov, 06:00 your time", unless the visitor's wall clock already reads the ticket's.
-  const arr = localTime(FLIGHT.arr), el = $('.arrive-local');
-  if (arr !== 'Thu 19 Nov, 00:00') { el.textContent = `That's ${arr} your time`; el.hidden = false; }
+  const z = UNLOCK.zone, at = new Date(UNLOCK.at);
+  const date = new Intl.DateTimeFormat('en-GB', { timeZone: z, day: 'numeric', month: 'short', year: 'numeric' }).format(at);
+  // en-US knows PST/EST, en-GB knows CET/GMT/BST; each falls back to "GMT+1" style for the other's zones.
+  const abbr = l => new Intl.DateTimeFormat(l, { timeZone: z, timeZoneName: 'short' }).formatToParts(at).find(x => x.type === 'timeZoneName').value;
+  const name = [abbr('en-US'), abbr('en-GB')].find(n => !n.startsWith('GMT') || n === 'GMT') ?? abbr('en-GB');
+  const time = new Intl.DateTimeFormat('en-GB', { timeZone: z, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at) + ' ' + name;
+  $('.arrive-main').textContent = `Unlocks ${date} · ${time}`;
+  // A country unlocks at once, so away from its first zone it is not midnight (21:00 in Los Angeles).
+  const midnight = time.startsWith('00:00') && date.startsWith('19 ');
+  $('.arrive-local').textContent = UNLOCK.estimated ? 'Estimate: midnight local time, no store time listed for your region'
+    : midnight ? `PlayStation Store unlock for ${UNLOCK.country}` : `All of ${UNLOCK.country} unlocks at the same moment`;
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   $('#local-time').innerHTML = `In your time zone${zone ? ` (${zone.replace(/_/g, ' ')})` : ''}, GT406 departs <b>${localTime(FLIGHT.dep)}</b> and lands <b>${localTime(FLIGHT.arr)}</b>.`;
 }
@@ -186,7 +196,7 @@ function applyState(c) {
 
 let heroOn = true;
 function tick() {
-  const c = countdown();
+  const c = now();
   applyState(c);
   // One clock, floor rule everywhere: the chip and the digits can never disagree.
   const [n, ...words] = c.label.split(' '), num = /^\d+$/.test(n);

@@ -2,7 +2,7 @@
 // Golden values freeze the v1 derive (every share link depends on them); the SVG checks enforce the
 // output rules of spec C.1 for every format, livery and awkward name.
 import assert from 'node:assert/strict';
-import { derive, cleanName, slug, shareUrl, qrText, countdown, FLIGHT, ORIGIN, DERIVE_VERSION } from '../site/js/passenger.js';
+import { derive, cleanName, slug, shareUrl, qrText, countdown, unlockFor, FLIGHT, ORIGIN, DERIVE_VERSION } from '../site/js/passenger.js';
 import { THEMES, THEME_IDS, themeOf } from '../site/js/themes.js';
 import { code128, qrMatrix, C128_PATTERNS } from '../site/js/codes.js';
 import { buildTicketSVG, FORMATS, FORMAT_IDS, altText, measure } from '../site/js/ticket.js';
@@ -124,6 +124,18 @@ eq([c2.state, c2.label, c2.ms], ['landed', 'WHEELS DOWN', 0], 'arr landed');
 eq(cd(FLIGHT.arr - 86400e3 - 1).label, '1 DAY TO GO', 'singular day');
 eq(cd(FLIGHT.arr - 42 * 60e3).label, '42 MIN TO GO', 'minutes');
 eq(cd(FLIGHT.arr + 1).ms, 0, 'ms never negative');
+// Regional unlock: listed storefronts, a whole country at once, the Indiana/Argentina prefixes, the midnight estimate.
+const un = (z, iso, country, est) => { const u = unlockFor(z); eq([u.at, u.country, u.estimated], [Date.parse(iso), country, est], 'unlock ' + z); };
+un('Europe/Berlin', '2026-11-18T23:00Z', 'Germany', false);
+un('Europe/London', '2026-11-19T00:00Z', 'the UK', false);
+un('America/Los_Angeles', '2026-11-19T05:00Z', 'the US', false);
+un('America/Indiana/Knox', '2026-11-19T05:00Z', 'the US', false);
+un('America/Argentina/Cordoba', '2026-11-19T03:00Z', 'Argentina', false);
+un('Pacific/Auckland', '2026-11-18T11:00Z', 'New Zealand', false);
+un('Asia/Kathmandu', '2026-11-18T18:15Z', null, true);
+un('Not/AZone', new Date(FLIGHT.arr).toISOString(), null, true);
+const cb = countdown(Date.parse('2026-11-18T23:00Z'), unlockFor('Europe/Berlin').at);
+eq([cb.state, cb.label], ['landed', 'WHEELS DOWN'], 'Berlin is out before GT406 departs');
 
 // ---------- Code128 ----------
 
@@ -218,7 +230,7 @@ const allIds = [...two.matchAll(/\sid="([^"]*)"/g)].map(m => m[1]);
 ok(new Set(allIds).size === allIds.length, 'two prefixes share one document without id clashes');
 eq(buildTicketSVG(lw, { prefix: 'ta-', now: NOW }), buildTicketSVG(lw, { prefix: 'ta-', now: NOW }), 'deterministic output');
 ok(buildTicketSVG(lw, { format: 'nope', theme: 'nope' }) === buildTicketSVG(lw, { format: 'ticket', theme: 'night' }), 'unknown format/theme fall back');
-ok(buildTicketSVG(lw, { format: 'story', now: NOW }).includes('31 DAYS TO GO') && buildTicketSVG(lw, { format: 'story', now: FLIGHT.arr }).includes('WHEELS DOWN'), 'Story days line');
+ok(buildTicketSVG(lw, { format: 'story', now: NOW, until: FLIGHT.arr }).includes('31 DAYS TO GO') && buildTicketSVG(lw, { format: 'story', now: FLIGHT.arr, until: FLIGHT.arr }).includes('WHEELS DOWN'), 'Story days line');
 
 // ---------- name fitting (spec D.2) ----------
 

@@ -2,7 +2,7 @@
 // patchName/measure/fontsReady, which callers use in the browser).
 // SVG rules (spec C.1): presentation attributes only, every id prefixed, no external anything, user text
 // escaped, hex colours with separate opacities, numbers rounded to 0.1, fonts by family name only.
-import { FLIGHT, qrText, countdown } from './passenger.js';
+import { FLIGHT, qrText, countdown, localUnlock } from './passenger.js';
 import { themeOf, FOIL } from './themes.js';
 import { code128, qrMatrix } from './codes.js';
 import { ticketArt, cardArt, sceneArt, photoSrc } from './art.js';
@@ -206,7 +206,7 @@ function landscape(p, T, P, src) {
 
 // ---------- Story 1080×1920 (spec D.6): scene + vertical card ----------
 
-function story(p, T, P, now, src) {
+function story(p, T, P, now, until, src) {
   const first = p.cabin === 'FIRST';
   const S = sceneArt({ theme: T.id, width: 1080, height: 1920, P, src });
   const C = cardArt({ theme: T.id, foil: first, P, src });
@@ -217,7 +217,7 @@ function story(p, T, P, now, src) {
     + (first ? grad(`${P}e-foil`, 56, 0, 856, 0, FOIL) : '');
 
   const scene = `<g fill="#FFFFFF" text-anchor="middle">`
-    + `<g font-family="${WIDE}" font-weight="900">${text(541, 176, 50, 'SEE YOU IN VICE CITY', ' letter-spacing="2"')}${text(541, 1764, 40, countdown(now).label, ' letter-spacing="2"')}</g>`
+    + `<g font-family="${WIDE}" font-weight="900">${text(541, 176, 50, 'SEE YOU IN VICE CITY', ' letter-spacing="2"')}${text(541, 1764, 40, countdown(now, until).label, ' letter-spacing="2"')}</g>`
     + text(540, 1826, 30, 'boardingpass.nichtlegacy.com', ` font-family="${SANS}" font-weight="700" fill-opacity=".8"`) + '</g>';
 
   const pill = first ? 'FIRST CLASS · ZONE 1 · STARFISH ISLAND' : `ZONE ${p.zone} · ${p.zoneName}`;
@@ -273,9 +273,9 @@ function post(p, T, P, src) {
 // ---------- entry ----------
 
 // `src` maps a photo file name to its URL: relative on the page, data URLs for exports (see export.js).
-export function buildTicketSVG(p, { format = 'ticket', theme, prefix = 't-', embedFonts = null, now = Date.now(), src = photoSrc } = {}) {
+export function buildTicketSVG(p, { format = 'ticket', theme, prefix = 't-', embedFonts = null, now = Date.now(), until = localUnlock().at, src = photoSrc } = {}) {
   const F = FORMATS[format] || FORMATS.ticket, T = themeOf(theme), P = prefix;
-  const { defs, body } = F.id === 'story' ? story(p, T, P, now, src) : F.id === 'post' ? post(p, T, P, src) : landscape(p, T, P, src);
+  const { defs, body } = F.id === 'story' ? story(p, T, P, now, until, src) : F.id === 'post' ? post(p, T, P, src) : landscape(p, T, P, src);
   const alt = altText(p, F.id);
   // geometricPrecision: Chromium otherwise lays out SVG text with hinted advances at the scaled pixel size,
   // which opens visible gaps inside words ("DEPART URE") whenever the preview is not at 1:1.
