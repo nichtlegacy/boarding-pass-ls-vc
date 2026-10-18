@@ -12,7 +12,7 @@ Type a name or gamertag and the ticket prints. No account, no backend, no tracki
 [![Deploy](https://github.com/nichtlegacy/boarding-pass-ls-vc/actions/workflows/pages.yml/badge.svg)](https://github.com/nichtlegacy/boarding-pass-ls-vc/actions/workflows/pages.yml)
 [![JavaScript: vanilla](https://img.shields.io/badge/JavaScript-vanilla%20ES%20modules-F7DF1E?logo=javascript&logoColor=black)](site/js/)
 [![Build: none](https://img.shields.io/badge/Build-none-222222)](site/)
-[![Self-test: 2177 checks](https://img.shields.io/badge/Self--test-2177%20checks-16A34A)](#tests)
+[![Self-test: 2663 checks](https://img.shields.io/badge/Self--test-2663%20checks-16A34A)](#tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [Website](https://boardingpass.nichtlegacy.com) • [Overview](#overview) • [Features](#features) • [Screenshots](#screenshots) • [Quick start](#quick-start) • [How it works](#how-it-works) • [Privacy](#privacy) • [Credits](#credits-and-third-party-assets)
@@ -39,13 +39,13 @@ The project stays deliberately:
 
 - **Same name, same seat.** Every field is drawn from its own seeded stream of the lower-cased name. The draw order is frozen as version 1, so a shared link still opens the same pass later.
 - **First Class**: about 3 in 100 names are upgraded and get foil tabs and a seal. A few names get special treatment.
-- **Four liveries**: Night (the default), Sunset, Leonida Keys and Ocean Drive, each printed over its own GTA VI screenshot under a livery wash. The liveries section shows your pass in all four side by side.
+- **Five liveries**: Night (the default), Sunset, Leonida Keys and Ocean Drive, each printed over its own GTA VI screenshot under a livery wash, plus Goodtime State, drawn over the illustrated art of Rockstar's Vice City Collection with its stickers (animated on the page, first frame in exports). The liveries section shows your pass in all five.
 - **Three formats**: the landscape ticket at 2000×813 (transparent PNG, die-cut corners), a 1080×1920 Story and a 1600×900 Post with the ticket on a scene.
 - **Exports**: PNG at 1× or 2×, JPG, and SVG with the ticket fonts embedded. Copy image where the browser supports it; on phones the main button opens the system share sheet.
 - **Share links and a real QR code**: `?name=&theme=&format=` reopens the exact pass, and the QR code on the ticket links to it. Two Code128 barcodes carry the route and booking data.
 - **Embeds**: copy-ready iframe, Markdown and HTML (`<picture>` with light and dark) snippets; the iframe serves [`embed.html`](site/embed.html).
 - **Full-screen view**: on a portrait phone the landscape ticket turns on its side, like holding the real thing.
-- **Countdown and departures board**: the landing page counts down to the GTA VI unlock in the visitor's region (the PlayStation Store's 15 regional windows, local midnight as an estimate elsewhere) in large gradient digits, and a split-flap board moves GT406 from on time to boarding, final call, departed and arrived.
+- **Countdown and departures board**: the landing page counts down to the GTA VI release in the visitor's time zone (15 regional windows from store listings, local midnight as an estimate elsewhere) in large gradient digits, and a split-flap board moves GT406 from on time to boarding, final call, departed and arrived.
 - **Intro and motion**: the GTA VI mark draws itself on first visit; any input fast-forwards it. Under `prefers-reduced-motion` the intro, flaps, tilt and scroll effects are skipped and the page is static.
 
 ## Screenshots
@@ -75,7 +75,7 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory site   # http://localho
 node scripts/selftest.mjs                                        # needs Node, no npm install
 ```
 
-Expected: the landing page with the GTA VI title over the Vice City sign and the countdown; type a name under *Check in* and the pass prints. The self-test ends with `selftest ok: 2177 checks`.
+Expected: the landing page with the GTA VI title over the Vice City sign and the countdown; type a name under *Check in* and the pass prints. The self-test ends with `selftest ok: 2663 checks`.
 
 ### Share links
 
@@ -132,7 +132,7 @@ Deployed to GitHub Pages by [`pages.yml`](.github/workflows/pages.yml) on every 
 | Code128 decode, QR contrast ≥ 7:1 per livery | pass | same |
 | SVG output rules for every format × livery × awkward name, name fitting | pass | same |
 
-Total: `selftest ok: 2177 checks`, plain Node with `node:assert`, no dependencies.
+Total: `selftest ok: 2663 checks`, plain Node with `node:assert`, no dependencies.
 
 ## Project structure
 
@@ -173,6 +173,7 @@ The ticket design follows the GT406 boarding passes shared on X. FlyUS is a fict
 | Asset | Files | Source | Licence |
 |---|---|---|---|
 | Background photos | `site/img/{hero,ticket,card,scene}-*.jpg`, swatches, `site/og.jpg` | Rockstar Games screenshots, obtained via [gtavicentre.com](https://gtavicentre.com) | © Rockstar Games, used as fan art |
+| Goodtime State art and stickers | `site/img/{ticket,card,scene-*}-goodtime.jpg`, `site/img/sticker-*.webp` | Rockstar Games' *The Goodtime State* Vice City Collection, via [gtavicentre.com](https://gtavicentre.com) | © Rockstar Games, used as fan art |
 | Grand Theft Auto VI logo | `site/img/gta-vi.png` | Rockstar Games | © / ™ Rockstar Games |
 | Urbanist | `site/fonts/urbanist-500.woff2` | [google/fonts](https://github.com/google/fonts/tree/main/ofl/urbanist) | SIL OFL 1.1 |
 | Onest | `site/fonts/onest-var.woff2` | [google/fonts](https://github.com/google/fonts/tree/main/ofl/onest) | SIL OFL 1.1 |

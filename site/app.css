@@ -317,6 +317,8 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 
 /* ---------- liveries strip ---------- */
 .lv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 36px}
+/* An odd last card sits centred under the pairs instead of hanging left. */
+.lv-grid>.lv-card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc((100% - 36px) / 2)}
 .lv-card{all:unset;display:flex;flex-direction:column;gap:16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .lv-card:focus-visible{outline:2px solid var(--focus);outline-offset:6px;border-radius:var(--r-media)}
 .lv-img{position:relative;display:block;aspect-ratio:2000/813;border-radius:var(--r-media);background:var(--grad-tile);transition:transform .5s var(--ease-wipe),box-shadow .5s var(--ease-wipe)}
@@ -477,6 +479,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
   .facts>div:nth-last-child(-n+2){border-bottom:0}
   .facts dd{font-size:20px}
   .lv-grid{grid-template-columns:minmax(0,1fr)}
+  .lv-grid>.lv-card:last-child:nth-child(odd){width:auto;justify-self:stretch}
   .board{padding:16px 14px}
   .board-top{flex-wrap:wrap;gap:6px 16px}
   .board-h{letter-spacing:.2em}
@@ -497,7 +500,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
   .foot{padding-bottom:110px}
   .foot-bar{flex-direction:column;align-items:flex-start}
   .lv{width:auto;flex:1 1 0;min-width:0}
-  .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
+  .chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 12px}
   #progress{display:none}
   #toast{bottom:calc(84px + env(safe-area-inset-bottom))}
 }

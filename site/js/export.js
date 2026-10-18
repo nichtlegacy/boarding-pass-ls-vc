@@ -1,7 +1,7 @@
 // Exports: standalone SVG with embedded fonts, PNG/JPG rasters, the 1× PNG cache behind Copy and Share.
 // Import-safe in Node (capabilities are false there); everything else needs a browser.
 import { buildTicketSVG, FORMATS } from './ticket.js';
-import { photosFor } from './art.js';
+import { photosFor, still } from './art.js';
 import { themeOf, DEFAULT_THEME } from './themes.js';
 import { slug, shareUrl, countdown, localUnlock } from './passenger.js';
 
@@ -44,7 +44,8 @@ export function fontFaceCSS() {
 const photos = new Map();
 function photoData(file) {
   if (!photos.has(file)) {
-    const p = fetch(new URL(`../img/${file}`, import.meta.url)).then(res => {
+    // Animated stickers export as their first frame: a canvas would only catch whatever frame was showing.
+    const p = fetch(new URL(`../img/${still(file)}`, import.meta.url)).then(res => {
       if (!res.ok) throw new Error(`photo ${file}: HTTP ${res.status}`);
       return res.blob();
     }).then(dataUrl);

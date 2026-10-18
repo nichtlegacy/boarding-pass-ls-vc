@@ -170,11 +170,12 @@ const UNLOCK = localUnlock(), now = () => countdown(Date.now(), UNLOCK.at);
   const abbr = l => new Intl.DateTimeFormat(l, { timeZone: z, timeZoneName: 'short' }).formatToParts(at).find(x => x.type === 'timeZoneName').value;
   const name = [abbr('en-US'), abbr('en-GB')].find(n => !n.startsWith('GMT') || n === 'GMT') ?? abbr('en-GB');
   const time = new Intl.DateTimeFormat('en-GB', { timeZone: z, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at) + ' ' + name;
-  $('.arrive-main').textContent = `Unlocks ${date} · ${time}`;
-  // A country unlocks at once, so away from its first zone it is not midnight (21:00 in Los Angeles).
+  $('.arrive-main').textContent = `Release ${date} · ${time}`;
+  // The browser only knows the zone, not the country or the platform, so the line names the zone's city.
+  // A country releases at once, so away from its first zone it is not midnight (21:00 in Los Angeles).
+  const city = z.split('/').at(-1).replace(/_/g, ' ');
   const midnight = time.startsWith('00:00') && date.startsWith('19 ');
-  $('.arrive-local').textContent = UNLOCK.estimated ? 'Estimate: midnight local time, no store time listed for your region'
-    : midnight ? `PlayStation Store unlock for ${UNLOCK.country}` : `All of ${UNLOCK.country} unlocks at the same moment`;
+  $('.arrive-local').textContent = `Your time · ${city}` + (UNLOCK.estimated ? ', estimated' : midnight ? '' : ', same moment across the country');
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   $('#local-time').innerHTML = `In your time zone${zone ? ` (${zone.replace(/_/g, ' ')})` : ''}, GT406 departs <b>${localTime(FLIGHT.dep)}</b> and lands <b>${localTime(FLIGHT.arr)}</b>.`;
 }

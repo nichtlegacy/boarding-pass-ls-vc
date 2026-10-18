@@ -6,9 +6,23 @@
 import { FOIL, DEFAULT_THEME } from './themes.js';
 
 // Screenshots: Rockstar Games, via gtavicentre.com. Cropped by hand into site/img/.
-export const PHOTOS = { ticket: id => `ticket-${known(id)}.jpg`, card: id => `card-${known(id)}.jpg`, story: 'scene-story.jpg', post: 'hero-1600.jpg' };
+// The Story and Post backdrops are shared unless a livery brings its own (`scene`).
+export const PHOTOS = {
+  ticket: id => `ticket-${known(id)}.jpg`, card: id => `card-${known(id)}.jpg`,
+  story: id => at(id).scene?.story ?? 'scene-story.jpg', post: id => at(id).scene?.post ?? 'hero-1600.jpg',
+};
 export const photoSrc = file => `img/${file}`;
-export const photosFor = (format, theme) => format === 'story' ? [PHOTOS.story, PHOTOS.card(theme)] : format === 'post' ? [PHOTOS.post, PHOTOS.ticket(theme)] : [PHOTOS.ticket(theme)];
+// Stickers: Rockstar's animated Goodtime State stickers (Vice City Collection), via gtavicentre.com. The
+// page shows the animated WebP; exports and reduced motion take the `-still` first frame.
+const STICKERS = { gator: [320, 228], sun: [320, 354], flamingo: [320, 487], manatee: [320, 250] };
+export const sticker = n => `sticker-${n}.webp`;
+export const still = file => file.replace(/^(sticker-[a-z]+)\.webp$/, '$1-still.webp');
+const used = (theme, ...keys) => [...new Set(keys.flatMap(k => (at(theme).stickers?.[k] || []).map(s => sticker(s[0]))))];
+export function photosFor(format, theme) {
+  return format === 'story' ? [PHOTOS.story(theme), PHOTOS.card(theme), ...used(theme, 'story', 'card')]
+    : format === 'post' ? [PHOTOS.post(theme), PHOTOS.ticket(theme), ...used(theme, 'post', 'ticket')]
+    : [PHOTOS.ticket(theme), ...used(theme, 'ticket')];
+}
 
 // Art tokens per livery: `sky` is the wash over the photo (top, middle, bottom) at `wash` opacity, `tint`
 // a veil fading out from the left edge at `veil` opacity (the ink-heavy departure column), then the tab
@@ -34,8 +48,29 @@ export const ART_THEMES = {
     band: ['#0F5E6B', '#178A8E', '#28A195'], bandFrond: '#06363F', bandFrondOpacity: .3,
     foot: ['#EB6A5D', '#E76C56'], footFrond: '#A8392F', footFrondOpacity: .3,
   },
+  // Rockstar's illustrated Vice City Collection art instead of a screenshot (palms at dusk on the ticket,
+  // the lifeguard beach on the Story card and the scenes), with the collection's stickers over the wash.
+  // Sticker rows are [name, x, y, width]; a fifth `true` drops it under the First Class seal.
+  goodtime: {
+    sky: ['#FFF4FA', '#FFF0F2', '#FFEBDD'], wash: .42, tint: '#FFF6F4', veil: .5,
+    band: ['#A3127A', '#C560B7', '#7A55CF'], bandFrond: '#FFFFFF', bandFrondOpacity: .2,
+    foot: ['#FF8E5E', '#F06AA0'], footFrond: '#FFFFFF', footFrondOpacity: .25,
+    scene: { story: 'scene-story-goodtime.jpg', post: 'scene-post-goodtime.jpg' },
+    stickers: {
+      ticket: [['sun', 1214, 96, 186, true], ['gator', 740, 648, 380]],
+      story: [['sun', -46, -40, 190], ['flamingo', -30, 1470, 250], ['manatee', 790, 1650, 300]],
+      post: [['manatee', -30, 700, 250], ['flamingo', 1450, 540, 190]],
+    },
+  },
 };
 const known = id => (ART_THEMES[id] ? id : DEFAULT_THEME), at = id => ART_THEMES[known(id)];
+
+function stickers(A, key, src, foil) {
+  return (A.stickers?.[key] || []).filter(s => !(foil && s[4])).map(([n, x, y, w]) => {
+    const [sw, sh] = STICKERS[n];
+    return `<image href="${src(sticker(n))}" x="${x}" y="${y}" width="${w}" height="${f(w * sh / sw)}"/>`;
+  }).join('');
+}
 
 // ---------- numbers and paths ----------
 // Path data is written in integer tenths and relative steps: exact 0.1 rounding (R6) and roughly half the
@@ -111,7 +146,8 @@ export function ticketArt({ theme, foil, P, src = photoSrc }) {
   // 1 photo, 2 livery wash: the sky gradient over the whole pass plus a stronger veil on the left, where
   // the departure column and the passenger row sit, so ink keeps its contrast on any part of the shot
   const back = `<image href="${src(PHOTOS.ticket(theme))}" width="2000" height="813" preserveAspectRatio="xMidYMid slice"/>`
-    + `<rect width="2000" height="813" fill="${url('sky')}" fill-opacity="${A.wash}"/><rect width="2000" height="813" fill="${url('tint')}"/>`;
+    + `<rect width="2000" height="813" fill="${url('sky')}" fill-opacity="${A.wash}"/><rect width="2000" height="813" fill="${url('tint')}"/>`
+    + stickers(A, 'ticket', src, foil);
 
   // 8 tabs: band / foot gradients (or First Class foil) with big close-up fronds clipped inside each tab
   const bandFill = foil ? url('foil') : url('band'), footFill = foil ? url('foil') : url('foot');
@@ -140,7 +176,8 @@ export function cardArt({ theme, foil, P, src = photoSrc }) {
     + (foil ? foilGrad(id('cfoil'), 912, 176) : '')
     + `<clipPath id="${id('cbandclip')}"><rect width="912" height="176"/></clipPath>`;
   const field = `<image href="${src(PHOTOS.card(theme))}" width="912" height="1440" preserveAspectRatio="xMidYMid slice"/>`
-    + `<rect width="912" height="1440" fill="${url('csky')}" fill-opacity="${A.wash}"/><rect width="912" height="1440" fill="${url('ctint')}"/>`;
+    + `<rect width="912" height="1440" fill="${url('csky')}" fill-opacity="${A.wash}"/><rect width="912" height="1440" fill="${url('ctint')}"/>`
+    + stickers(A, 'card', src, foil);
   const band = `<g clip-path="${url('cbandclip')}"><rect width="912" height="176" fill="${foil ? url('cfoil') : url('cband')}"/><path d="${spray(CARD_FRONDS)}" fill="${A.bandFrond}" fill-opacity="${A.bandFrondOpacity}"/></g>`;
   return { defs, field, band };
 }
@@ -155,7 +192,8 @@ export function sceneArt({ theme, width: W, height: H, P, src = photoSrc }) {
   // white headline, countdown and URL sit.
   const defs = vgrad(id('sshade'), 0, H, stops(['#100D16', '#100D16', '#100D16', '#100D16'], [0, .3, .62, 1], [.62, 0, .1, .9]));
   const body = `<rect width="${W}" height="${H}" fill="#100D16"/>`
-    + `<image href="${src(H > W ? PHOTOS.story : PHOTOS.post)}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`
-    + `<rect width="${W}" height="${H}" fill="${A.sky[1]}" fill-opacity=".16"/><rect width="${W}" height="${H}" fill="${url('sshade')}"/>`;
+    + `<image href="${src(H > W ? PHOTOS.story(theme) : PHOTOS.post(theme))}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`
+    + `<rect width="${W}" height="${H}" fill="${A.sky[1]}" fill-opacity=".16"/><rect width="${W}" height="${H}" fill="${url('sshade')}"/>`
+    + stickers(A, H > W ? 'story' : 'post', src, false);
   return { defs, body };
 }

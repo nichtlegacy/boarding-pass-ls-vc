@@ -2,7 +2,7 @@
 // Art tokens (sky, buildings, tabs) live in art.js. Values are frozen unless a contrast check fails:
 // ink on box >= 5.8:1, QR modules on tile >= 7:1, always dark modules on a light tile.
 
-export const THEME_IDS = ['night', 'sunset', 'keys', 'ocean'];
+export const THEME_IDS = ['night', 'sunset', 'keys', 'ocean', 'goodtime'];
 export const DEFAULT_THEME = 'night';
 // First Class tab and seal fill, every livery. White text holds >= 3.4:1 on each stop.
 export const FOIL = ['#6E5BC4', '#2E8FA8', '#B8862B', '#B8467F', '#6E5BC4'];   // stops at 0 .25 .5 .75 1
@@ -39,6 +39,14 @@ export const THEMES = {
     tear: '#FFFFFF', tearOpacity: 1, code: '#0E3446',
     qrTile: '#FFFFFF', qrTileOpacity: 0.9, qrInk: '#0E3446',
     mat: '#0B1721', pageGlow: '#86DFDC', swatch: ['#178A8E', '#BFE6DA', '#0E3446'],
+  },
+  goodtime: {
+    id: 'goodtime', name: 'Goodtime State', line: 'Gators in shades, a sun that never sets.', scheme: 'light',
+    ink: '#2A1038', muted: '#2A1038', onBand: '#FFFFFF', onInk: '#FFFFFF',
+    box: '#FFFFFF', boxOpacity: 0.74, boxLine: null, boxLineOpacity: 0,
+    tear: '#FFFFFF', tearOpacity: 1, code: '#2A1038',
+    qrTile: '#FFFFFF', qrTileOpacity: 0.92, qrInk: '#2A1038',
+    mat: '#FFF4EA', pageGlow: '#FF8AC0', swatch: ['#FFAC63', '#C560B7', '#3C60B7'],
   },
 };
 

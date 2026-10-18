@@ -110,7 +110,7 @@ if(q.get('name')){m='none';d.classList.add('shared')}if(matchMedia('(prefers-red
       "featureList": [
         "Your name or gamertag on a FlyUS boarding pass, Los Santos (LSX) to Vice City (VCI)",
         "Seat, booking reference and barcodes derived from the name, so a link re-creates the pass",
-        "Four liveries: Night, Sunset, Day and Ocean Drive",
+        "Five liveries: Night, Sunset, Leonida Keys, Ocean Drive and Goodtime State",
         "Ticket 2000×813, Story 1080×1920 and Post 1600×900",
         "PNG, JPG and SVG downloads, share links and embeds"
       ],
@@ -165,7 +165,7 @@ if(q.get('name')){m='none';d.classList.add('shared')}if(matchMedia('(prefers-red
       <p class="kicker after-intro" style="--i:0">FlyUS<span aria-hidden="true">&nbsp;&nbsp;·&nbsp;&nbsp;</span><span class="sr-only"> · </span><span class="kicker-st">Now boarding</span></p>
       <img class="gta-logo" src="img/gta-vi.png" width="1200" height="910" alt="Grand Theft Auto VI" decoding="async">
       <h1 id="hero-h" class="hero-line after-intro" style="--i:1"><span class="sr-only">Flight GT406: </span>Your seat to Vice City</h1>
-      <p class="hero-arrive latch" data-at=".34"><span class="arrive-main">Unlocks 19 Nov 2026</span><span class="arrive-local">Midnight local time in most regions</span></p>
+      <p class="hero-arrive latch" data-at=".34"><span class="arrive-main">Release 19 Nov 2026</span><span class="arrive-local">Midnight local time in most countries</span></p>
       <div id="cd" class="cd latch needs-js" data-at=".52">
         <div class="cd-cells" aria-hidden="true">
           <div><span class="num" data-k="days"></span><span class="micro">Days</span></div>
@@ -222,6 +222,7 @@ if(q.get('name')){m='none';d.classList.add('shared')}if(matchMedia('(prefers-red
         <label class="lv" title="The original lavender, at dusk."><input type="radio" name="theme" value="sunset"><span class="lv-sw"><img src="img/swatch-sunset.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Sunset</span></label>
         <label class="lv" title="Seaplane over the Keys."><input type="radio" name="theme" value="keys"><span class="lv-sw"><img src="img/swatch-keys.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Leonida Keys</span></label>
         <label class="lv" title="Teal, coral, 1986."><input type="radio" name="theme" value="ocean"><span class="lv-sw"><img src="img/swatch-ocean.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Ocean Drive</span></label>
+        <label class="lv" title="Gators in shades, a sun that never sets."><input type="radio" name="theme" value="goodtime"><span class="lv-sw"><img src="img/swatch-goodtime.webp" width="320" height="130" alt="" loading="lazy" decoding="async"></span><span class="lv-name">Goodtime State</span></label>
       </div>
     </fieldset>
     <fieldset class="group">
@@ -267,13 +268,14 @@ if(q.get('name')){m='none';d.classList.add('shared')}if(matchMedia('(prefers-red
 
 <section id="liveries" class="section liveries needs-js" aria-labelledby="lv-h">
   <div class="head">
-    <h2 id="lv-h" class="ink rv-head">Four liveries</h2>
+    <h2 id="lv-h" class="ink rv-head">Five liveries</h2>
   </div>
   <div class="lv-grid">
       <button type="button" class="lv-card rv-item" data-livery="night" aria-label="Print your pass in the Night livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Night</b><span>Midnight over downtown.</span></span></button>
       <button type="button" class="lv-card rv-item" data-livery="sunset" aria-label="Print your pass in the Sunset livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Sunset</b><span>The original lavender, at dusk.</span></span></button>
       <button type="button" class="lv-card rv-item" data-livery="keys" aria-label="Print your pass in the Leonida Keys livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Leonida Keys</b><span>Seaplane over the Keys.</span></span></button>
       <button type="button" class="lv-card rv-item" data-livery="ocean" aria-label="Print your pass in the Ocean Drive livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Ocean Drive</b><span>Teal, coral, 1986.</span></span></button>
+      <button type="button" class="lv-card rv-item" data-livery="goodtime" aria-label="Print your pass in the Goodtime State livery"><span class="lv-img"><img alt="" width="800" height="325" decoding="async"></span><span class="lv-cap"><b>Goodtime State</b><span>Gators in shades, a sun that never sets.</span></span></button>
   </div>
 </section>
 

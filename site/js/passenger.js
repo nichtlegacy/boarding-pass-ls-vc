@@ -149,8 +149,8 @@ export function countdown(now = Date.now(), at = FLIGHT.arr) {
 }
 
 // ---------- regional unlock ----------
-// PlayStation Store unlock windows for 19 Nov 2026 (15 waves over 63 storefronts), as collected by
-// gtavicentre.com; Rockstar has only confirmed the date. Mostly midnight local, but each country unlocks at
+// Release windows for 19 Nov 2026 (15 waves over 63 countries) from the PlayStation Store listings, as
+// collected by gtavicentre.com; Rockstar has only confirmed the date, and no store has published others. Mostly midnight local, but each country unlocks at
 // once (the US at 00:00 Eastern, so 21:00 on the West Coast). Zones not listed get local midnight, flagged
 // as an estimate.
 const WAVES = [

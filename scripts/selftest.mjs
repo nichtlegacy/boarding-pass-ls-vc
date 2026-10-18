@@ -197,7 +197,7 @@ function checkSVG(svg, P, label, fonts = false) {
   ok(fonts ? (svg.match(/<style>/g) || []).length === 1 && /^<style>(@font-face\{[^}]*\}\s*)+<\/style>$/.test(svg.match(/<style>[\s\S]*?<\/style>/)[0]) : !/<style/.test(svg), `${label}: <style> only for embedded fonts`);
   ok(!/href="https?:/.test(svg) && !/@import/.test(svg), `${label}: nothing external`);
   ok(!/<use|<foreignObject/.test(svg), `${label}: no use/foreignObject`);
-  ok([...svg.matchAll(/<image [^>]*>/g)].every(m => /href="(img\/[a-z0-9-]+\.jpg|data:image\/jpeg;base64,[^"]+)"/.test(m[0])), `${label}: <image> only for the bundled photos`);
+  ok([...svg.matchAll(/<image [^>]*>/g)].every(m => /href="(img\/[a-z0-9-]+\.(jpg|webp)|data:image\/(jpeg|webp);base64,[^"]+)"/.test(m[0])), `${label}: <image> only for the bundled photos and stickers`);
   ok(!/NaN|undefined|Infinity|\[object/.test(body), `${label}: no NaN/undefined`);
   ok(!/rgba?\(|hsla?\(/.test(body), `${label}: hex colours only`);
   ok(!/mix-blend|feTurbulence|<filter(?![^>]*filterUnits="userSpaceOnUse")/.test(body), `${label}: no grain/blend, filters in user space`);

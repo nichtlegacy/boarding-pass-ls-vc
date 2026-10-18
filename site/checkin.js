@@ -46,7 +46,7 @@ function engine() {
 // ---------- render: build into the hidden buffer, then cross-fade ----------
 function render({ flaps = false } = {}) {
   const next = 1 - cur, b = bufs[next], f = fmt();
-  b.innerHTML = E.buildTicketSVG(p, { format: f, theme: S.theme, prefix: next ? 'tb-' : 'ta-' });
+  b.innerHTML = E.buildTicketSVG(p, { format: f, theme: S.theme, prefix: next ? 'tb-' : 'ta-', src: reduce.matches ? E.stillSrc : undefined });
   stage.dataset.format = f;
   b.classList.add('on'); b.removeAttribute('aria-hidden'); b.inert = false;
   bufs[cur].classList.remove('on'); bufs[cur].setAttribute('aria-hidden', 'true'); bufs[cur].inert = true;
@@ -274,7 +274,7 @@ function clamp01(v) { return Math.min(1, Math.max(0, v)); }
 function openViewer() {
   if (!armed) return;
   const art = $('.viewer-art', viewer), f = fmt();
-  art.innerHTML = E.buildTicketSVG(p, { format: f, theme: S.theme, prefix: 'v-' });
+  art.innerHTML = E.buildTicketSVG(p, { format: f, theme: S.theme, prefix: 'v-', src: reduce.matches ? E.stillSrc : undefined });
   // A landscape ticket on a portrait phone is turned on its side, like holding the real thing.
   const rot = f === 'ticket' && innerHeight > innerWidth;
   art.classList.toggle('rot', rot);
