@@ -203,7 +203,7 @@ function landscape(p, T, P, src) {
     + text(1514, 556, 41.2, p.seat, ' data-flap=""') + text(1662, 556, 41.2, FLIGHT.gate) + text(1808.1, 556, 41.2, FLIGHT.terminal)
     + '</g></g>' + seal + '</g>';
 
-  return { defs, body: `<g clip-path="url(#${P}e-shape)">${A.back}${A.tabs}${boxes}${tear}${ink}</g>` };
+  return { defs, body: `<g clip-path="url(#${P}e-shape)">${A.back}${A.tabs}${boxes}${tear}${ink}${A.top}</g>` };
 }
 
 // ---------- Story 1080×1920 (spec D.6): scene + vertical card ----------
@@ -254,9 +254,9 @@ function story(p, T, P, now, until, src) {
     + C.field + C.band
     + `<g fill="${T.box}" fill-opacity="${T.boxOpacity}"${line}>${rect(32, 540, 848, 160, ' rx="12"')}</g>`
     + `<path d="M56,1076H856" fill="none" stroke="${T.tear}" stroke-opacity="${T.tearOpacity}" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 18"/>`
-    + ink + '</g></g></g>';
+    + ink + C.top + '</g></g></g>';
 
-  return { defs, body: S.body + scene + card };
+  return { defs, body: S.body + scene + card + S.top };
 }
 
 // ---------- Post 1600×900 (spec D.7): the landscape ticket tilted on the dusk scene ----------
@@ -268,7 +268,8 @@ function post(p, T, P, src) {
     defs: S.defs + SHADOW(P, 40, 126, 1520, 740),
     body: S.body
       + `<g fill="#FFFFFF" font-family="${SANS}" font-weight="700">${text(100, 92, 30, 'NOW BOARDING · GT406', ' letter-spacing="6"')}</g>`
-      + `<g transform="rotate(-2 800 470)" filter="url(#${P}e-shadow)"><svg x="100" y="186" width="1400" height="569" viewBox="0 0 2000 813"><defs>${k.defs}</defs>${k.body}</svg></g>`,
+      + `<g transform="rotate(-2 800 470)" filter="url(#${P}e-shadow)"><svg x="100" y="186" width="1400" height="569" viewBox="0 0 2000 813"><defs>${k.defs}</defs>${k.body}</svg></g>`
+      + S.top,
   };
 }
 

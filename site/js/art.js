@@ -50,16 +50,18 @@ export const ART_THEMES = {
   },
   // Rockstar's illustrated Vice City Collection art instead of a screenshot (palms at dusk on the ticket,
   // the lifeguard beach on the Story card and the scenes), with the collection's stickers over the wash.
-  // Sticker rows are [name, x, y, width]; a fifth `true` drops it under the First Class seal.
+  // Sticker rows are [name, x, y, width]; a fifth `true` drops it where the First Class seal goes. They sit
+  // on top of everything, so each spot keeps clear of text, the QR code and the barcode.
   goodtime: {
     sky: ['#FFF4FA', '#FFF0F2', '#FFEBDD'], wash: .42, tint: '#FFF6F4', veil: .5,
     band: ['#A3127A', '#C560B7', '#7A55CF'], bandFrond: '#FFFFFF', bandFrondOpacity: .2,
     foot: ['#FF8E5E', '#F06AA0'], footFrond: '#FFFFFF', footFrondOpacity: .25,
     scene: { story: 'scene-story-goodtime.jpg', post: 'scene-post-goodtime.jpg' },
     stickers: {
-      ticket: [['sun', 1214, 96, 186, true], ['gator', 740, 648, 380]],
-      story: [['sun', -46, -40, 190], ['flamingo', -30, 1470, 250], ['manatee', 790, 1650, 300]],
-      post: [['manatee', -30, 700, 250], ['flamingo', 1450, 540, 190]],
+      ticket: [['sun', 1196, 52, 200, true], ['gator', 740, 652, 380]],
+      card: [['gator', 625, 1046, 245]],
+      story: [['sun', -46, -40, 190], ['flamingo', -20, 1560, 260], ['manatee', 790, 1572, 300]],
+      post: [['manatee', -24, 690, 260], ['flamingo', 1474, 548, 196]],
     },
   },
 };
@@ -146,8 +148,7 @@ export function ticketArt({ theme, foil, P, src = photoSrc }) {
   // 1 photo, 2 livery wash: the sky gradient over the whole pass plus a stronger veil on the left, where
   // the departure column and the passenger row sit, so ink keeps its contrast on any part of the shot
   const back = `<image href="${src(PHOTOS.ticket(theme))}" width="2000" height="813" preserveAspectRatio="xMidYMid slice"/>`
-    + `<rect width="2000" height="813" fill="${url('sky')}" fill-opacity="${A.wash}"/><rect width="2000" height="813" fill="${url('tint')}"/>`
-    + stickers(A, 'ticket', src, foil);
+    + `<rect width="2000" height="813" fill="${url('sky')}" fill-opacity="${A.wash}"/><rect width="2000" height="813" fill="${url('tint')}"/>`;
 
   // 8 tabs: band / foot gradients (or First Class foil) with big close-up fronds clipped inside each tab
   const bandFill = foil ? url('foil') : url('band'), footFill = foil ? url('foil') : url('foot');
@@ -164,7 +165,7 @@ export function ticketArt({ theme, foil, P, src = photoSrc }) {
     + vgrad(id('foot'), 700, 813, stops(A.foot))
     + (foil ? foilGrad(id('foil'), 2000, 400) : '')
     + Object.entries(TABS).map(([k, d]) => `<clipPath id="${id('c' + k)}"><path d="${d}"/></clipPath>`).join('');
-  return { defs, back, tabs };
+  return { defs, back, tabs, top: stickers(A, 'ticket', src, foil) };   // top: over the ink, like stuck-on stickers
 }
 
 // ---------- Story card (card-local 912×1440) ----------
@@ -176,10 +177,9 @@ export function cardArt({ theme, foil, P, src = photoSrc }) {
     + (foil ? foilGrad(id('cfoil'), 912, 176) : '')
     + `<clipPath id="${id('cbandclip')}"><rect width="912" height="176"/></clipPath>`;
   const field = `<image href="${src(PHOTOS.card(theme))}" width="912" height="1440" preserveAspectRatio="xMidYMid slice"/>`
-    + `<rect width="912" height="1440" fill="${url('csky')}" fill-opacity="${A.wash}"/><rect width="912" height="1440" fill="${url('ctint')}"/>`
-    + stickers(A, 'card', src, foil);
+    + `<rect width="912" height="1440" fill="${url('csky')}" fill-opacity="${A.wash}"/><rect width="912" height="1440" fill="${url('ctint')}"/>`;
   const band = `<g clip-path="${url('cbandclip')}"><rect width="912" height="176" fill="${foil ? url('cfoil') : url('cband')}"/><path d="${spray(CARD_FRONDS)}" fill="${A.bandFrond}" fill-opacity="${A.bandFrondOpacity}"/></g>`;
-  return { defs, field, band };
+  return { defs, field, band, top: stickers(A, 'card', src, foil) };
 }
 const CARD_FRONDS = [[960, -70, 172, 420, 40], [960, -70, 146, 360, 50], [960, -70, 120, 270, 30], [960, -70, 96, 200, 20]];
 
@@ -193,7 +193,6 @@ export function sceneArt({ theme, width: W, height: H, P, src = photoSrc }) {
   const defs = vgrad(id('sshade'), 0, H, stops(['#100D16', '#100D16', '#100D16', '#100D16'], [0, .3, .62, 1], [.62, 0, .1, .9]));
   const body = `<rect width="${W}" height="${H}" fill="#100D16"/>`
     + `<image href="${src(H > W ? PHOTOS.story(theme) : PHOTOS.post(theme))}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`
-    + `<rect width="${W}" height="${H}" fill="${A.sky[1]}" fill-opacity=".16"/><rect width="${W}" height="${H}" fill="${url('sshade')}"/>`
-    + stickers(A, H > W ? 'story' : 'post', src, false);
-  return { defs, body };
+    + `<rect width="${W}" height="${H}" fill="${A.sky[1]}" fill-opacity=".16"/><rect width="${W}" height="${H}" fill="${url('sshade')}"/>`;
+  return { defs, body, top: stickers(A, H > W ? 'story' : 'post', src, false) };   // top: over the card or ticket
 }
