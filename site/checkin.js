@@ -274,6 +274,7 @@ function clamp01(v) { return Math.min(1, Math.max(0, v)); }
 function openViewer() {
   if (!armed) return;
   const art = $('.viewer-art', viewer), f = fmt();
+  art.dataset.format = f;
   art.innerHTML = E.buildTicketSVG(p, { format: f, theme: S.theme, prefix: 'v-', src: reduce.matches ? E.stillSrc : undefined });
   // A landscape ticket on a portrait phone is turned on its side, like holding the real thing.
   const rot = f === 'ticket' && innerHeight > innerWidth;
