@@ -39,7 +39,7 @@ The project stays deliberately:
 
 - **Same name, same seat.** Every field is drawn from its own seeded stream of the lower-cased name. The draw order is frozen as version 1, so a shared link still opens the same pass later.
 - **First Class**: about 3 in 100 names are upgraded and get foil tabs and a seal. A few names get special treatment.
-- **Five liveries**: Night (the default), Sunset, Leonida Keys and Ocean Drive, each printed over its own GTA VI screenshot under a livery wash, plus Goodtime State, drawn over the illustrated art of Rockstar's Vice City Collection with its stickers (animated on the page, first frame in exports). The liveries section shows your pass in all five.
+- **Five liveries**: Night (the default), Sunset, Leonida Keys and Ocean Drive, each printed over its own GTA VI screenshot under a livery wash, plus Goodtime State, drawn over the illustrated art of Rockstar's Vice City Collection with its stickers (animated on the page, a fixed key pose in exports). The liveries section shows your pass in all five.
 - **Three formats**: the landscape ticket at 2000×813 (transparent PNG, die-cut corners), a 1080×1920 Story and a 1600×900 Post with the ticket on a scene.
 - **Exports**: PNG at 1× or 2×, JPG, and SVG with the ticket fonts embedded. Copy image where the browser supports it; on phones the main button opens the system share sheet.
 - **Share links and a real QR code**: `?name=&theme=&format=` reopens the exact pass, and the QR code on the ticket links to it. Two Code128 barcodes carry the route and booking data.

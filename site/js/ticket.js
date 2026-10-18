@@ -6,7 +6,7 @@ import { FLIGHT, qrText, countdown, localUnlock } from './passenger.js';
 import { themeOf, FOIL } from './themes.js';
 import { code128, qrMatrix } from './codes.js';
 import { ticketArt, cardArt, sceneArt, photoSrc, still } from './art.js';
-// Reduced motion on the page: the stickers' first frame instead of the animated WebP.
+// Reduced motion on the page: the stickers' fixed pose instead of the animated WebP.
 export const stillSrc = file => photoSrc(still(file));
 import { WORDMARK } from './wordmark.js';
 

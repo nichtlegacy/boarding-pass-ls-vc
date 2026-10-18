@@ -13,7 +13,8 @@ export const PHOTOS = {
 };
 export const photoSrc = file => `img/${file}`;
 // Stickers: Rockstar's animated Goodtime State stickers (Vice City Collection), via gtavicentre.com. The
-// page shows the animated WebP; exports and reduced motion take the `-still` first frame.
+// page shows the animated WebP; exports and reduced motion take the `-still` file, a separately drawn key pose
+// (the flamingo's heart eyes, a sharper 320 px sun), never a frame caught mid-motion.
 const STICKERS = { gator: [320, 228], sun: [320, 354], flamingo: [320, 487], manatee: [320, 250] };
 export const sticker = n => `sticker-${n}.webp`;
 export const still = file => file.replace(/^(sticker-[a-z]+)\.webp$/, '$1-still.webp');

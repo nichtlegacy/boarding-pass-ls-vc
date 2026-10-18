@@ -44,7 +44,7 @@ export function fontFaceCSS() {
 const photos = new Map();
 function photoData(file) {
   if (!photos.has(file)) {
-    // Animated stickers export as their first frame: a canvas would only catch whatever frame was showing.
+    // Animated stickers export as their fixed `-still` pose: a canvas would only catch whatever frame was showing.
     const p = fetch(new URL(`../img/${still(file)}`, import.meta.url)).then(res => {
       if (!res.ok) throw new Error(`photo ${file}: HTTP ${res.status}`);
       return res.blob();
