@@ -29,7 +29,7 @@ This site prints that ticket for anyone, at once. The name is the seed: seat, ca
 
 The project stays deliberately:
 
-- **static** — plain HTML, CSS and ES modules under `site/`, no bundler, no build step, deployed as committed.
+- **static** — plain HTML, CSS and ES modules under `site/`, no bundler; the deploy only stamps module URLs with the commit.
 - **local** — the ticket and every export are made in the browser; there is no server-side code at all.
 - **deterministic** — no `Math.random` in the ticket; one name, one seat, today and next year.
 
@@ -89,13 +89,14 @@ Example: `https://boardingpass.nichtlegacy.com/?name=Luther+West&theme=keys&form
 
 ### Asset scripts
 
-Everything under `site/` is committed as deployed. The scripts only regenerate committed assets and are never deployed:
+Everything under `site/` is committed as deployed, apart from the version stamp on module URLs. The scripts only regenerate committed assets and are never deployed:
 
 | Script | Produces | Needs |
 |---|---|---|
 | [`scripts/fonts.sh`](scripts/fonts.sh) | `site/fonts/*.woff2` and `OFL.txt`: download, instance, subset, rename, coverage check | Python 3, network |
 | [`scripts/render.sh`](scripts/render.sh) | the link card `site/og.jpg` (and its `?v=` hash in `index.html`), `.github/images/social-preview.png`, favicon PNGs and `favicon.ico` | Playwright's headless Chromium, Pillow |
 | [`scripts/wordmark.py`](scripts/wordmark.py) | `site/js/wordmark.js`, the FlyUS wordmark outlined from Archivo | fontTools, skia-pathops |
+| [`scripts/stamp.mjs`](scripts/stamp.mjs) | the deployed copy of `site/` with `?v=<commit>` on local scripts, imports and stylesheets (run by the workflow) | Node |
 | [`scripts/og.html`](scripts/og.html) | the template `render.sh` screenshots | a local server at the repo root |
 | [`scripts/lab.html`](scripts/lab.html) | nothing: every format, livery and test name in one grid for visual checks (`?name=`, `theme=`, `format=`, `all`) | a local server at the repo root |
 
@@ -120,7 +121,7 @@ flowchart LR
 - **Drawn over real shots.** The ticket follows the layout of the original passes. Shapes, tabs, fronds and the FlyUS wordmark are generated in code; the backdrop is a GTA VI screenshot per livery.
 - **Loaded when needed.** The ticket engine and its fonts load on idle after the intro, when the check-in comes into view, or at once on a share link.
 
-Deployed to GitHub Pages by [`pages.yml`](.github/workflows/pages.yml) on every push to `main` that touches `site/`. The workflow first checks that every local `src`, `href` and meta link in the HTML points to a file that exists, then uploads `site/` as it is.
+Deployed to GitHub Pages by [`pages.yml`](.github/workflows/pages.yml) on every push to `main` that touches `site/`. The workflow first checks that every local `src`, `href` and meta link in the HTML points to a file that exists, then uploads a copy of `site/` in which [`scripts/stamp.mjs`](scripts/stamp.mjs) has added `?v=<commit>` to every local script, module import and stylesheet. Pages caches each file for ten minutes on its own, so without the stamp a browser could pair a cached module from the last deploy with a new one and fail to load the ticket engine.
 
 ## Tests
 

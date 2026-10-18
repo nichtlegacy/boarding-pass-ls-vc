@@ -1,14 +1,16 @@
 name: Deploy Pages
 
 # Publishes the boarding pass generator at boardingpass.nichtlegacy.com. The
-# site is plain HTML, CSS and JavaScript under site/ and ships as committed:
-# there is no build step, so the artifact is the folder itself.
+# site is plain HTML, CSS and JavaScript under site/ and ships as committed;
+# the only build step stamps local scripts and imports with the commit, so a
+# cached module from the last deploy never meets a new one.
 
 on:
   push:
     branches: [main]
     paths:
       - 'site/**'
+      - 'scripts/stamp.mjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -50,13 +52,16 @@ jobs:
                    echo CNAME; echo 404.html; } | sed 's|^/||' | grep -v '^$' | sort -u)
           exit $missing
 
+      - name: Stamp module URLs
+        run: cp -R site _site && node scripts/stamp.mjs _site "${GITHUB_SHA::8}"
+
       - name: Configure Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: site
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
