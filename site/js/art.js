@@ -19,6 +19,12 @@ const STICKERS = { gator: [320, 228], sun: [320, 354], flamingo: [320, 487], man
 export const sticker = n => `sticker-${n}.webp`;
 export const still = file => file.replace(/^(sticker-[a-z]+)\.webp$/, '$1-still.webp');
 const used = (theme, ...keys) => [...new Set(keys.flatMap(k => (at(theme).stickers?.[k] || []).map(s => sticker(s[0]))))];
+// The Story's stickers as [name, x, y, width] in its 1080×1920 pixels, in paint order: the card's (the card
+// sits at 84, 236), then the scene's. The animated export draws them over a Story built without them.
+export function storyStickers(theme, foil) {
+  const S = at(theme).stickers || {};
+  return [...(S.card || []).filter(s => !(foil && s[4])).map(([n, x, y, w]) => [n, x + 84, y + 236, w]), ...(S.story || []).map(s => s.slice(0, 4))];
+}
 export function photosFor(format, theme) {
   return format === 'story' ? [PHOTOS.story(theme), PHOTOS.card(theme), ...used(theme, 'story', 'card')]
     : format === 'post' ? [PHOTOS.post(theme), PHOTOS.ticket(theme), ...used(theme, 'post', 'ticket')]
@@ -61,8 +67,8 @@ export const ART_THEMES = {
     stickers: {
       ticket: [['sun', 1196, 52, 200, true], ['gator', 740, 652, 380]],
       card: [['gator', 615, 1066, 260]],   // flat cut edge resting on the barcode (top y 1250)
-      story: [['sun', -46, -40, 190], ['flamingo', -20, 1560, 260], ['manatee', 790, 1572, 300]],
-      post: [['manatee', -24, 690, 260], ['flamingo', 1474, 548, 196]],
+      story: [['sun', -46, -40, 190], ['flamingo', -20, 1560, 260], ['manatee', 770, 1662, 330]],   // sand cut flush with the bottom edge
+      post: [['manatee', -24, 697, 260], ['flamingo', 1474, 604, 196]],
     },
   },
 };

@@ -80,9 +80,9 @@ const toBlob = (canvas, type, q) => new Promise((ok, fail) => canvas.toBlob(b =>
 
 // One path for every format and browser. Data URL rather than blob URL (Safari), and the second draw
 // after two frames is for WebKit, which can paint an SVG image before its embedded fonts are decoded.
-export async function exportRaster(p, { format, theme, type = 'png', scale = 1, now } = {}) {
-  const F = FORMATS[format] || FORMATS.ticket, jpg = type === 'jpg' || type === 'jpeg';
-  const svg = buildTicketSVG(p, { format: F.id, theme, now, prefix: 'x-', embedFonts: await fontFaceCSS(), src: await embedded(F.id, theme) });
+export async function renderCanvas(p, { format, theme, jpg = false, scale = 1, now, stickers = true } = {}) {
+  const F = FORMATS[format] || FORMATS.ticket;
+  const svg = buildTicketSVG(p, { format: F.id, theme, now, stickers, prefix: 'x-', embedFonts: await fontFaceCSS(), src: await embedded(F.id, theme) });
   const img = new Image();
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   await img.decode();
@@ -95,7 +95,11 @@ export async function exportRaster(p, { format, theme, type = 'png', scale = 1, 
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   };
   paint(); await frame(); await frame(); paint();
-  return toBlob(canvas, jpg ? 'image/jpeg' : 'image/png', jpg ? 0.92 : undefined);
+  return canvas;
+}
+export async function exportRaster(p, { format, theme, type = 'png', scale = 1, now } = {}) {
+  const jpg = type === 'jpg' || type === 'jpeg';
+  return toBlob(await renderCanvas(p, { format, theme, jpg, scale, now }), jpg ? 'image/jpeg' : 'image/png', jpg ? 0.92 : undefined);
 }
 
 // ---------- 1× PNG cache (Copy image and Share need a blob inside the user gesture) ----------

@@ -208,7 +208,7 @@ function landscape(p, T, P, src) {
 
 // ---------- Story 1080×1920 (spec D.6): scene + vertical card ----------
 
-function story(p, T, P, now, until, src) {
+function story(p, T, P, now, until, src, bare) {
   const first = p.cabin === 'FIRST';
   const S = sceneArt({ theme: T.id, width: 1080, height: 1920, P, src });
   const C = cardArt({ theme: T.id, foil: first, P, src });
@@ -254,9 +254,9 @@ function story(p, T, P, now, until, src) {
     + C.field + C.band
     + `<g fill="${T.box}" fill-opacity="${T.boxOpacity}"${line}>${rect(32, 540, 848, 160, ' rx="12"')}</g>`
     + `<path d="M56,1076H856" fill="none" stroke="${T.tear}" stroke-opacity="${T.tearOpacity}" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 18"/>`
-    + ink + C.top + '</g></g></g>';
+    + ink + (bare ? '' : C.top) + '</g></g></g>';
 
-  return { defs, body: S.body + scene + card + S.top };
+  return { defs, body: S.body + scene + card + (bare ? '' : S.top) };
 }
 
 // ---------- Post 1600×900 (spec D.7): the landscape ticket tilted on the dusk scene ----------
@@ -276,9 +276,10 @@ function post(p, T, P, src) {
 // ---------- entry ----------
 
 // `src` maps a photo file name to its URL: relative on the page, data URLs for exports (see export.js).
-export function buildTicketSVG(p, { format = 'ticket', theme, prefix = 't-', embedFonts = null, now = Date.now(), until = localUnlock().at, src = photoSrc } = {}) {
+// `stickers: false` leaves the Story's stickers out: the animated export draws them frame by frame (video.js).
+export function buildTicketSVG(p, { format = 'ticket', theme, prefix = 't-', embedFonts = null, now = Date.now(), until = localUnlock().at, src = photoSrc, stickers = true } = {}) {
   const F = FORMATS[format] || FORMATS.ticket, T = themeOf(theme), P = prefix;
-  const { defs, body } = F.id === 'story' ? story(p, T, P, now, until, src) : F.id === 'post' ? post(p, T, P, src) : landscape(p, T, P, src);
+  const { defs, body } = F.id === 'story' ? story(p, T, P, now, until, src, !stickers) : F.id === 'post' ? post(p, T, P, src) : landscape(p, T, P, src);
   const alt = altText(p, F.id);
   // geometricPrecision: Chromium otherwise lays out SVG text with hinted advances at the scaled pixel size,
   // which opens visible gaps inside words ("DEPART URE") whenever the preview is not at 1:1.

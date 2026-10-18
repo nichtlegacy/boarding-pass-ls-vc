@@ -7,6 +7,9 @@ import { THEMES, THEME_IDS, themeOf } from '../site/js/themes.js';
 import { code128, qrMatrix, C128_PATTERNS } from '../site/js/codes.js';
 import { buildTicketSVG, FORMATS, FORMAT_IDS, altText, measure } from '../site/js/ticket.js';
 import { fileName, can } from '../site/js/export.js';
+import { storyStickers } from '../site/js/art.js';
+import { frameAt, SPAN } from '../site/js/video.js';
+import { FRAMES } from '../site/js/sticker-frames.js';
 
 let checks = 0;
 const ok = (cond, msg) => { assert.ok(cond, msg); checks++; };
@@ -108,6 +111,7 @@ eq(fileName(lw, { format: 'story', theme: 'sunset', scale: 2 }, 'png'), 'flyus-g
 eq(fileName(lw, { theme: 'keys', scale: 2 }, 'svg'), 'flyus-gt406-luther-west-keys.svg', 'fileName svg has no @2x');
 eq(fileName(ghost, { format: 'ticket', theme: 'nope', scale: 1 }, 'jpg'), 'flyus-gt406-passenger.jpg', 'fileName ghost, unknown theme');
 eq(fileName(lw, { format: 'post' }, 'png'), 'flyus-gt406-luther-west-post.png', 'fileName post');
+eq(fileName(lw, { format: 'story', theme: 'goodtime' }, 'mp4'), 'flyus-gt406-luther-west-story-goodtime.mp4', 'fileName animated Story');
 eq([can.copyImage, can.shareFiles], [false, false], 'capabilities false in Node');
 
 // ---------- countdown ----------
@@ -231,6 +235,23 @@ ok(new Set(allIds).size === allIds.length, 'two prefixes share one document with
 eq(buildTicketSVG(lw, { prefix: 'ta-', now: NOW }), buildTicketSVG(lw, { prefix: 'ta-', now: NOW }), 'deterministic output');
 ok(buildTicketSVG(lw, { format: 'nope', theme: 'nope' }) === buildTicketSVG(lw, { format: 'ticket', theme: 'night' }), 'unknown format/theme fall back');
 ok(buildTicketSVG(lw, { format: 'story', now: NOW, until: FLIGHT.arr }).includes('31 DAYS TO GO') && buildTicketSVG(lw, { format: 'story', now: FLIGHT.arr, until: FLIGHT.arr }).includes('WHEELS DOWN'), 'Story days line');
+
+// ---------- animated Story (video.js) ----------
+
+const bare = buildTicketSVG(lw, { format: 'story', theme: 'goodtime', now: NOW, stickers: false });
+ok(!bare.includes('sticker-') && buildTicketSVG(lw, { format: 'story', theme: 'goodtime', now: NOW }).includes('sticker-'), 'Story without stickers is the video base');
+eq(bare, buildTicketSVG(lw, { format: 'story', theme: 'goodtime', now: NOW }).replace(/<image href="img\/sticker-[^>]*>/g, ''), 'only the stickers go');
+const marks = storyStickers('goodtime', false);
+eq(marks.map(m => m[0]), ['gator', 'sun', 'flamingo', 'manatee'], 'Story stickers in paint order');
+eq(marks[0].slice(1), [615 + 84, 1066 + 236, 260], 'card sticker moved into Story pixels');
+ok(marks.every(([n, x, y, w]) => FRAMES[n] && x < 1080 && y < 1920 && x + w > 0 && y + w * FRAMES[n].h / FRAMES[n].w > 0), 'every sticker has frames and lands in the Story');
+eq(storyStickers('night', false), [], 'no stickers outside Goodtime State');
+for (const [n, F] of Object.entries(FRAMES)) {
+  const seq = Array.from({ length: SPAN * 30 / 1000 }, (_, i) => frameAt(n, i * 1000 / 30));
+  ok(seq[0] === 0 && frameAt(n, SPAN) === 0 && seq.at(-1) === F.count - 1, `${n}: the clip loops on a whole cycle`);
+  ok(seq.every((f, i) => i === 0 || f === seq[i - 1] || f === (seq[i - 1] + 1) % F.count), `${n}: frames only step forward`);
+  eq(new Set(seq).size, F.count, `${n}: every frame shows`);
+}
 
 // ---------- name fitting (spec D.2) ----------
 

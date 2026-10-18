@@ -2,7 +2,7 @@
 // format switchers, export buttons, URL sync, shared-pass banner, full-screen viewer and embed snippets.
 // The ticket engine (ticket.js, export.js and the art) and the five ticket faces load lazily: on idle after
 // the splash, when #checkin comes within 600 px, or at once on a deep link.
-import { cleanName, derive, shareUrl, ORIGIN } from './js/passenger.js';
+import { cleanName, derive, shareUrl, ORIGIN, countdown, localUnlock } from './js/passenger.js';
 import { THEME_IDS, themeOf } from './js/themes.js';
 import { toast } from './app.js';
 
@@ -143,6 +143,7 @@ function commit(force = false) {
   if (renamed) status();
   embed();
   liveries();
+  motion();
   clearTimeout(urlT);
   urlT = setTimeout(syncUrl, 350);
   if (!p.ghost) setTimeout(() => E.exp.prepare(p, opts()), 600);
@@ -187,9 +188,9 @@ narrow.addEventListener('change', () => {
 
 // ---------- export ----------
 function labelPrimary() {
-  $$('input[name=scale]').forEach(r => { r.disabled = S.type === 'svg'; });
+  $$('input[name=scale]').forEach(r => { r.disabled = S.type === 'svg' || S.type === 'mp4'; });
   $('.dl-label', dl).textContent = touch.matches ? 'Save or share'
-    : S.type === 'svg' ? 'Download SVG' : `Download ${S.type.toUpperCase()} · ${S.scale}×`;
+    : S.type === 'svg' ? 'Download SVG' : S.type === 'mp4' ? 'Download MP4 · animated' : `Download ${S.type.toUpperCase()} · ${S.scale}×`;
 }
 for (const r of $$('input[name=type]')) r.addEventListener('change', () => { S.type = r.value; labelPrimary(); });
 for (const r of $$('input[name=scale]')) r.addEventListener('change', () => { S.scale = +r.value; labelPrimary(); });
@@ -209,6 +210,7 @@ const jammed = () => toast('The printer jammed. Try PNG at 1× or another browse
 const blocked = () => toast('Your browser kept the ticket to itself. Use Download instead.');
 
 async function save(type = S.type, scale = S.scale) {
+  if (type === 'mp4') return saveVideo();
   const o = opts(), x = E.exp;
   dl.setAttribute('aria-busy', 'true');
   try {
@@ -220,11 +222,60 @@ async function save(type = S.type, scale = S.scale) {
   dl.removeAttribute('aria-busy');
 }
 async function share() {
+  if (S.type === 'mp4') return shareVideo();
   try {
     const r = await E.exp.shareImage(p, opts());
     if (r === 'retry') toast('Your ticket is ready. Tap Share again.');
     else if (r === 'unsupported') save('png', 1);
   } catch { jammed(); }
+}
+// Animated Story: Goodtime State in Story format, where the browser can encode H.264 (video.js loads on
+// first need). One clip is kept, so Share can hand it over inside a second tap once it is rendered.
+const mp4 = $('input[name=type][value=mp4]');
+let V = null, clip = null;   // video.js once it proved support; { key, promise, blob }
+const animated = () => S.theme === 'goodtime' && fmt() === 'story';
+function motion() {
+  if (animated() && !V) import('./js/video.js').then(async m => { if (await m.videoSupport()) { V = m; motion(); } }, () => {});
+  const off = !(animated() && V);
+  mp4.closest('label').hidden = off;
+  if (off && S.type === 'mp4') { S.type = 'png'; $('input[name=type][value=png]').checked = true; labelPrimary(); }
+}
+function clipFor() {
+  const key = [p.key, p.display, S.theme, countdown(Date.now(), localUnlock().at).label].join('|');
+  if (clip?.key !== key) {
+    const c = clip = { key, blob: null };
+    const label = $('.dl-label', dl);
+    c.promise = V.exportVideo(p, { theme: S.theme }, f => { label.textContent = `Animating · ${Math.round(f * 100)}%`; })
+      .then(b => (c.blob = b), e => { if (clip === c) clip = null; throw e; });
+  }
+  return clip;
+}
+const clipName = q => E.exp.fileName(q, { format: 'story', theme: S.theme }, 'mp4');
+async function saveVideo() {
+  const q = p;
+  dl.setAttribute('aria-busy', 'true');
+  try {
+    const name = clipName(q);
+    E.exp.download(await clipFor().promise, name);
+    toast(`Saved ${name}. A 7-second loop, ready for Instagram, TikTok and X.`);
+  } catch { jammed(); }
+  dl.removeAttribute('aria-busy');
+  labelPrimary();
+}
+// No text with the file: Instagram and TikTok drop out of the iOS share sheet when text rides along.
+async function shareVideo() {
+  const q = p, c = clipFor();
+  dl.setAttribute('aria-busy', 'true');
+  try {
+    const file = new File([c.blob || await c.promise], clipName(q), { type: 'video/mp4' });
+    if (!navigator.canShare?.({ files: [file] })) { E.exp.download(file, file.name); toast(`Saved ${file.name}.`); }
+    else await navigator.share({ files: [file] }).catch(e => {
+      if (e.name === 'NotAllowedError') toast('Your video is ready. Tap Share again.');   // the render outlived the tap
+      else if (e.name !== 'AbortError') throw e;
+    });
+  } catch { jammed(); }
+  dl.removeAttribute('aria-busy');
+  labelPrimary();
 }
 function primary() {
   if (!armed) return needName();

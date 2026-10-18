@@ -12,7 +12,7 @@ Type a name or gamertag and the ticket prints. No account, no backend, no tracki
 [![Deploy](https://github.com/nichtlegacy/boarding-pass-ls-vc/actions/workflows/pages.yml/badge.svg)](https://github.com/nichtlegacy/boarding-pass-ls-vc/actions/workflows/pages.yml)
 [![JavaScript: vanilla](https://img.shields.io/badge/JavaScript-vanilla%20ES%20modules-F7DF1E?logo=javascript&logoColor=black)](site/js/)
 [![Build: none](https://img.shields.io/badge/Build-none-222222)](site/)
-[![Self-test: 2663 checks](https://img.shields.io/badge/Self--test-2663%20checks-16A34A)](#tests)
+[![Self-test: 2682 checks](https://img.shields.io/badge/Self--test-2682%20checks-16A34A)](#tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [Website](https://boardingpass.nichtlegacy.com) • [Overview](#overview) • [Features](#features) • [Screenshots](#screenshots) • [Quick start](#quick-start) • [How it works](#how-it-works) • [Privacy](#privacy) • [Credits](#credits-and-third-party-assets)
@@ -42,6 +42,7 @@ The project stays deliberately:
 - **Five liveries**: Night (the default), Sunset, Leonida Keys and Ocean Drive, each printed over its own GTA VI screenshot under a livery wash, plus Goodtime State, drawn over the illustrated art of Rockstar's Vice City Collection with its stickers (animated on the page, a fixed key pose in exports). The liveries section shows your pass in all five.
 - **Three formats**: the landscape ticket at 2000×813 (transparent PNG, die-cut corners), a 1080×1920 Story and a 1600×900 Post with the ticket on a scene.
 - **Exports**: PNG at 1× or 2×, JPG, and SVG with the ticket fonts embedded. Copy image where the browser supports it; on phones the main button opens the system share sheet.
+- **Animated Story**: in Goodtime State, the Story also exports as MP4 with the stickers moving: 1080×1920, H.264 at 30 fps, a 7.2-second seamless loop, no audio, ready to upload to Instagram, TikTok and X. Encoded in the browser with WebCodecs; browsers without an H.264 encoder do not show the option.
 - **Share links and a real QR code**: `?name=&theme=&format=` reopens the exact pass, and the QR code on the ticket links to it. Two Code128 barcodes carry the route and booking data.
 - **Embeds**: copy-ready iframe, Markdown and HTML (`<picture>` with light and dark) snippets; the iframe serves [`embed.html`](site/embed.html).
 - **Full-screen view**: on a portrait phone the landscape ticket turns on its side, like holding the real thing.
@@ -75,7 +76,7 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory site   # http://localho
 node scripts/selftest.mjs                                        # needs Node, no npm install
 ```
 
-Expected: the landing page with the GTA VI title over the Vice City sign and the countdown; type a name under *Check in* and the pass prints. The self-test ends with `selftest ok: 2663 checks`.
+Expected: the landing page with the GTA VI title over the Vice City sign and the countdown; type a name under *Check in* and the pass prints. The self-test ends with `selftest ok: 2682 checks`.
 
 ### Share links
 
@@ -95,6 +96,7 @@ Everything under `site/` is committed as deployed, apart from the version stamp 
 |---|---|---|
 | [`scripts/fonts.sh`](scripts/fonts.sh) | `site/fonts/*.woff2` and `OFL.txt`: download, instance, subset, rename, coverage check | Python 3, network |
 | [`scripts/render.sh`](scripts/render.sh) | the link card `site/og.jpg` (and its `?v=` hash in `index.html`), `.github/images/social-preview.png`, favicon PNGs and `favicon.ico` | Playwright's headless Chromium, Pillow |
+| [`scripts/stickers.py`](scripts/stickers.py) | `site/img/sticker-*-sheet.webp` and `site/js/sticker-frames.js`: the animated stickers as sprite sheets with their frame timings, for the MP4 export | Pillow |
 | [`scripts/wordmark.py`](scripts/wordmark.py) | `site/js/wordmark.js`, the FlyUS wordmark outlined from Archivo | fontTools, skia-pathops |
 | [`scripts/stamp.mjs`](scripts/stamp.mjs) | the deployed copy of `site/` with `?v=<commit>` on local scripts, imports and stylesheets (run by the workflow) | Node |
 | [`scripts/og.html`](scripts/og.html) | the template `render.sh` screenshots | a local server at the repo root |
@@ -113,11 +115,12 @@ flowchart LR
   ticket -->|"SVG string"| embed["site/embed.html<br/>iframe embed"]
   ticket --> exp["site/js/export.js"]
   exp --> files["SVG · PNG · JPG<br/>copy · share sheet"]
+  exp --> video["site/js/video.js<br/>animated Story MP4"]
   name --> url["Share link<br/>?name=…&theme=…&format=…"]
 ```
 
 - **Deterministic, not random.** Each field draws from its own stream (FNV-1a of the name plus a salt, into mulberry32), so adding a field later never moves an existing seat. Odds, seat maps, the PNR alphabet and the draw order are frozen for version 1; golden values in the self-test guard them.
-- **One SVG for everything.** The preview, the full-screen view, the embed and every export come from the same `buildTicketSVG()` call. Exports embed the five ticket faces and the photos as data URIs, so the SVG looks the same in any viewer, and PNG/JPG are drawn from that SVG onto a canvas.
+- **One SVG for everything.** The preview, the full-screen view, the embed and every export come from the same `buildTicketSVG()` call. Exports embed the five ticket faces and the photos as data URIs, so the SVG looks the same in any viewer, and PNG/JPG are drawn from that SVG onto a canvas. The animated Story draws the Story without its stickers once, then paints each sticker frame from its sprite sheet on top, 216 times, into a WebCodecs `VideoEncoder` and [mp4-muxer](https://github.com/Vanilagy/mp4-muxer).
 - **Drawn over real shots.** The ticket follows the layout of the original passes. Shapes, tabs, fronds and the FlyUS wordmark are generated in code; the backdrop is a GTA VI screenshot per livery.
 - **Loaded when needed.** The ticket engine and its fonts load on idle after the intro, when the check-in comes into view, or at once on a share link.
 
@@ -132,8 +135,9 @@ Deployed to GitHub Pages by [`pages.yml`](.github/workflows/pages.yml) on every 
 | Name cleaning, slugs, share URLs, QR text, file names, countdown states, regional unlock times | pass | same |
 | Code128 decode, QR contrast ≥ 7:1 per livery | pass | same |
 | SVG output rules for every format × livery × awkward name, name fitting | pass | same |
+| Animated Story: sticker layout, seamless loop timing, every frame shown | pass | same |
 
-Total: `selftest ok: 2663 checks`, plain Node with `node:assert`, no dependencies.
+Total: `selftest ok: 2682 checks`, plain Node with `node:assert`, no dependencies.
 
 ## Project structure
 
@@ -145,7 +149,7 @@ site/                    the whole website, deployed as is
 ├── checkin.js           check-in flow, preview, export buttons, URL sync, viewer, embed snippets
 ├── embed.html           iframe embed of a single pass
 ├── js/                  ticket engine: passenger, themes, codes, ticket, art, export, wordmark
-│   └── vendor/          qrcodegen.js (Nayuki, MIT)
+│   └── vendor/          qrcodegen.js (Nayuki, MIT), mp4-muxer.js (Vanilagy, MIT)
 ├── img/                 hero, ticket, card and scene photos (Rockstar screenshots), GTA VI logo, swatches
 └── fonts/               self-hosted woff2: OFL subsets only
 scripts/                 asset generators, self-test, og template and visual lab (not deployed)
@@ -174,7 +178,7 @@ The ticket design follows the GT406 boarding passes shared on X. FlyUS is a fict
 | Asset | Files | Source | Licence |
 |---|---|---|---|
 | Background photos | `site/img/{hero,ticket,card,scene}-*.jpg`, swatches, `site/og.jpg` | Rockstar Games screenshots, obtained via [gtavicentre.com](https://gtavicentre.com) | © Rockstar Games, used as fan art |
-| Goodtime State art and stickers | `site/img/{ticket,card,scene-*}-goodtime.jpg`, `site/img/sticker-*.webp` | Rockstar Games' *The Goodtime State* Vice City Collection, via [gtavicentre.com](https://gtavicentre.com) | © Rockstar Games, used as fan art |
+| Goodtime State art and stickers | `site/img/{ticket,card,scene-*}-goodtime.jpg`, `site/img/sticker-*.webp` (and the sprite sheets cut from them) | Rockstar Games' *The Goodtime State* Vice City Collection, via [gtavicentre.com](https://gtavicentre.com) | © Rockstar Games, used as fan art |
 | Grand Theft Auto VI logo | `site/img/gta-vi.png` | Rockstar Games | © / ™ Rockstar Games |
 | Urbanist | `site/fonts/urbanist-500.woff2` | [google/fonts](https://github.com/google/fonts/tree/main/ofl/urbanist) | SIL OFL 1.1 |
 | Onest | `site/fonts/onest-var.woff2` | [google/fonts](https://github.com/google/fonts/tree/main/ofl/onest) | SIL OFL 1.1 |
@@ -182,6 +186,7 @@ The ticket design follows the GT406 boarding passes shared on X. FlyUS is a fict
 | Archivo Expanded (also the wordmark outlines) | `site/fonts/archivo-expanded-900.woff2` | [google/fonts](https://github.com/google/fonts/tree/main/ofl/archivo) | SIL OFL 1.1 |
 | Arimo Bold Italic | `site/fonts/arimo-700i.woff2` | [google/fonts](https://github.com/google/fonts/tree/main/ofl/arimo) | SIL OFL 1.1 |
 | QR encoder | `site/js/vendor/qrcodegen.js` | [nayuki/QR-Code-generator](https://github.com/nayuki/QR-Code-generator) | MIT |
+| MP4 muxer | `site/js/vendor/mp4-muxer.js` (5.2.2) | [Vanilagy/mp4-muxer](https://github.com/Vanilagy/mp4-muxer) | MIT |
 | Icon shapes | sprite in `site/index.html` | after [Lucide](https://lucide.dev) | ISC |
 
 The OFL fonts ship with [`site/fonts/OFL.txt`](site/fonts/OFL.txt); [`site/fonts/README.md`](site/fonts/README.md) documents subsets and the Carlito rename.
