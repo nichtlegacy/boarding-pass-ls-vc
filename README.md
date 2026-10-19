@@ -121,7 +121,7 @@ flowchart LR
 
 - **Deterministic, not random.** Each field draws from its own stream (FNV-1a of the name plus a salt, into mulberry32), so adding a field later never moves an existing seat. Odds, seat maps, the PNR alphabet and the draw order are frozen for version 1; golden values in the self-test guard them.
 - **One SVG for everything.** The preview, the full-screen view, the embed and every export come from the same `buildTicketSVG()` call. Exports embed the five ticket faces and the photos as data URIs, so the SVG looks the same in any viewer, and PNG/JPG are drawn from that SVG onto a canvas. The animated Story draws the Story without its stickers once, then paints each sticker frame from its sprite sheet on top, 216 times, into a WebCodecs `VideoEncoder` and [mp4-muxer](https://github.com/Vanilagy/mp4-muxer).
-- **Drawn over real shots.** The ticket follows the layout of the original passes. Shapes, tabs, fronds and the FlyUS wordmark are generated in code; the backdrop is a GTA VI screenshot per livery.
+- **Drawn over real shots.** The ticket follows the layout of Vinewood Motors' original passes (see [Credits](#credits-and-third-party-assets)). Shapes, tabs, fronds and the FlyUS wordmark are generated in code; the backdrop is a GTA VI screenshot per livery.
 - **Loaded when needed.** The ticket engine and its fonts load on idle after the intro, when the check-in comes into view, or at once on a share link.
 
 Deployed to GitHub Pages by [`pages.yml`](.github/workflows/pages.yml) on every push to `main` that touches `site/`. The workflow first checks that every local `src`, `href` and meta link in the HTML points to a file that exists, then uploads a copy of `site/` in which [`scripts/stamp.mjs`](scripts/stamp.mjs) has added `?v=<commit>` to every local script, module import and stylesheet. Pages caches each file for ten minutes on its own, so without the stamp a browser could pair a cached module from the last deploy with a new one and fail to load the ticket engine.
@@ -173,7 +173,7 @@ No cookies, no analytics, no backend. The ticket and every export are made in yo
 
 ## Credits and third-party assets
 
-The ticket design follows the GT406 boarding passes shared on X. FlyUS is a fictional airline from the Grand Theft Auto series. The page's visual language follows [gtavicentre.com](https://gtavicentre.com).
+The ticket design follows the FlyUS GT406 boarding passes that Vinewood Motors made by hand for its followers on X; this site lets everyone print their own. FlyUS is a fictional airline from the Grand Theft Auto series. The page's visual language follows [gtavicentre.com](https://gtavicentre.com).
 
 | Asset | Files | Source | Licence |
 |---|---|---|---|
